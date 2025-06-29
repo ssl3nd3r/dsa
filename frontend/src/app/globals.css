@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #ededed;
+  --foreground: #121212;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-montserrat);
+  --font-kantumruy: var(--font-kantumruy);
+}
+
+@theme {
+  --color-black: #3B3C36;
+}
+
+.dark {
+  --background: #121212;
+  --foreground: #ededed;
+}
+
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-montserrat), system-ui, sans-serif;
+}
+
+/* body * {
+  @apply transition-colors duration-300;
+} */
+
+.quick-link {
+  @apply relative dark:text-white text-black cursor-pointer;
+}
+
+.quick-link:before {
+  @apply content-[''] absolute h-0.5 w-0 bottom-0 z-[-1] left-0 bg-[currentColor] transition-all duration-300;
+}
+
+.quick-link:hover:before {
+  @apply w-full;
+}
+
+.logo {
+  font-family: var(--font-kantumruy), system-ui, sans-serif;
+}
+
+/* Custom utility classes */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}

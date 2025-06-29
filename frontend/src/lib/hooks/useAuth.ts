@@ -1,0 +1,71 @@
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { RootState, AppDispatch } from '../store';
+import { fetchUserProfile } from '../slices/authSlice';
+import { log } from 'node:console';
+
+interface UseAuthOptions {
+  redirectTo?: string;
+  requireAuth?: boolean;
+  disableRedirect?: boolean;
+}
+
+export const useAuth = (options: UseAuthOptions = {}) => {
+  const { redirectTo = '/login', requireAuth = true, disableRedirect = false } = options;
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const { user, token, isAuthenticated, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  useEffect(() => {
+    // If we have a token but no user, try to fetch the user profile
+    if (token && !user && !loading) {
+      dispatch(fetchUserProfile());
+    }
+  }, [token, user, loading, dispatch]);
+
+  useEffect(() => {
+    // If authentication is required and user is not authenticated, redirect
+    if (requireAuth && !loading && !isAuthenticated && !disableRedirect && !token) {
+      router.push(redirectTo);
+    }
+    else {
+      setIsLoading(false);
+    }
+  }, [requireAuth, loading, isAuthenticated, redirectTo, router, disableRedirect, token]);
+
+  return {
+    user,
+    token,
+    isAuthenticated,
+    loading: isLoading,
+    // Helper function to check if user has specific role or permission
+    hasRole: (role: string) => user?.role === role,
+    // Helper function to check if user is property owner
+    isPropertyOwner: () => user?.role === 'owner',
+    // Helper function to check if user is tenant
+    isTenant: () => user?.role === 'tenant',
+  };
+};
+
+// Hook for pages that should redirect to dashboard if already authenticated
+export const useGuestAuth = (redirectTo : string = '/dashboard') => {
+  const router = useRouter();
+  console.log('useGuestAuth', redirectTo);
+  const { isAuthenticated, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  useEffect(() => {
+    // If user is already authenticated, redirect to dashboard
+    if (!loading && isAuthenticated) {
+      
+      router.push(redirectTo);
+    }
+  }, [isAuthenticated, loading, redirectTo, router]);
+
+  return { isAuthenticated, loading };
+}; 
