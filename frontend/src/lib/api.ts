@@ -1,8 +1,8 @@
 import axios from 'axios';
+import { API_URL } from './constants';
 
 // Get the API URL from environment or use a fallback
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://khaki-dove-475271.hostingersite.com/api';
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = API_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,

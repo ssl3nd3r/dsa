@@ -15,6 +15,7 @@ Route::post('/register', [UserController::class, 'register']);
 Route::post('/register/complete', [UserController::class, 'completeRegister']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/login/complete', [UserController::class, 'completeLogin']);
+Route::get('/admin', fn () => redirect('/admin'));
 
 // Register OTP routes
 Route::post('/otp/register/resend', [OtpController::class, 'resendRegisterOtp']);

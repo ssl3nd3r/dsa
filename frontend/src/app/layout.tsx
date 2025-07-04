@@ -4,7 +4,6 @@ import "./globals.css";
 import { ReduxProvider } from "@/lib/providers";
 import Layout from "@/components/Layouts/Layout";
 import Toast from "@/components/UI/Toast";
-import { Fade } from "@mui/material";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",

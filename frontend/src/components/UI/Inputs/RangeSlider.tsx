@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Slider } from '@mui/material'
-import { useTheme } from '@/lib/hooks/useTheme';
 import TextInput from './TextInput';
 
 interface RangeSliderProps {
-  min: number;
+  min?: number;
   max: number;
   value: number[];
   width?: string;
@@ -12,7 +10,7 @@ interface RangeSliderProps {
   name: string;
 }
 
-export default function RangeSlider({ min, max, value, onChange, name, width = "100%" }: RangeSliderProps) {
+export default function RangeSlider({ max, value, onChange, name, width = "100%" }: RangeSliderProps) {
   const [rangeValue, setRangeValue] = useState<number[]>(value);
 
   useEffect(() => {
@@ -20,43 +18,43 @@ export default function RangeSlider({ min, max, value, onChange, name, width = "
     onChange(new Event('change'), rangeValue, 0);
   }, [rangeValue]);
   
-  const {theme} = useTheme();
+  // const {theme} = useTheme();
 
-  const sliderStyles = {
-    width: '95%',
-    margin: '0 auto',
+  // const sliderStyles = {
+  //   width: '95%',
+  //   margin: '0 auto',
     
-    // Track styling
-    '& .MuiSlider-track': {
-      backgroundColor: theme === 'dark' ? '#fff' : '#000',
-      border: `2px solid ${theme === 'dark' ? '#fff' : '#000'}`,
-    },
+  //   // Track styling
+  //   '& .MuiSlider-track': {
+  //     backgroundColor: theme === 'dark' ? '#fff' : '#000',
+  //     border: `2px solid ${theme === 'dark' ? '#fff' : '#000'}`,
+  //   },
     
-    // Thumb styling
-    '& .MuiSlider-thumb': {
-      backgroundColor: theme === 'dark' ? '#fff' : '#000',
-      border: `2px solid ${theme === 'dark' ? '#fff' : '#000'}`,
-      height: '15px',
-      width: '15px',
+  //   // Thumb styling
+  //   '& .MuiSlider-thumb': {
+  //     backgroundColor: theme === 'dark' ? '#fff' : '#000',
+  //     border: `2px solid ${theme === 'dark' ? '#fff' : '#000'}`,
+  //     height: '15px',
+  //     width: '15px',
       
-      '&:hover, &.Mui-focusVisible': {
-        backgroundColor: theme === 'dark' ? '#fff' : '#000',
-        border: `2px solid ${theme === 'dark' ? '#fff' : '#000'}`,
-        boxShadow: `0 0 0 4px ${theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'}`,
-      },
+  //     '&:hover, &.Mui-focusVisible': {
+  //       backgroundColor: theme === 'dark' ? '#fff' : '#000',
+  //       border: `2px solid ${theme === 'dark' ? '#fff' : '#000'}`,
+  //       boxShadow: `0 0 0 4px ${theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'}`,
+  //     },
       
-      '&.Mui-active': {
-        backgroundColor: theme === 'dark' ? '#fff' : '#000',
-        border: `2px solid ${theme === 'dark' ? '#fff' : '#000'}`,
-        boxShadow: `0 0 0 6px ${theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'}`,
-      },
-    },
+  //     '&.Mui-active': {
+  //       backgroundColor: theme === 'dark' ? '#fff' : '#000',
+  //       border: `2px solid ${theme === 'dark' ? '#fff' : '#000'}`,
+  //       boxShadow: `0 0 0 6px ${theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'}`,
+  //     },
+  //   },
     
-    // Rail styling
-    '& .MuiSlider-rail': {
-      backgroundColor: theme === 'dark' ? '#666' : '#ccc',
-    },
-  }
+  //   // Rail styling
+  //   '& .MuiSlider-rail': {
+  //     backgroundColor: theme === 'dark' ? '#666' : '#ccc',
+  //   },
+  // }
 
   return (
     <div style={{width}} className='flex flex-col gap-1 rounded-md relative py-2 outline-none text-black dark:text-white'>

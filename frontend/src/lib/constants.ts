@@ -1,3 +1,7 @@
+export const API_URL = 'https://khaki-dove-475271.hostingersite.com/api';
+// export const API_URL = 'http://localhost:8000/api';
+
+
 export const AREAS = [{
   value: 'Dubai Marina',
   label: 'Dubai Marina'

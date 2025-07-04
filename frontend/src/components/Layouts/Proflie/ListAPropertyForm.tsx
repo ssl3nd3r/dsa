@@ -53,7 +53,7 @@ export default function ListAPropertyForm() {
     try {
       await dispatch(createProperty(data)).unwrap();    
       successToast('Property listed successfully!');
-      // reset();
+      reset();
     } catch (error) {
       errorToast(error as string);
     }

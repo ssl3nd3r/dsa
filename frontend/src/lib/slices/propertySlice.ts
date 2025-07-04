@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import api from '../api';
-import MyProperties from '@/components/Layouts/Proflie/MyProperties';
 
 // Types
 export interface Property {
