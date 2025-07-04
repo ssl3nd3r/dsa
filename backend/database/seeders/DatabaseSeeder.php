@@ -14,9 +14,28 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $users = [
+            [
+                'name' => 'Maya',
+                'email' => 'mayad@dsa.ae',
+            ],
+            [
+                'name' => 'Client',
+                'email' => 'client@dsa.ae',
+            ],
+            [
+                'name' => 'Vendor',
+                'email' => 'vendor@dsa.ae',
+            ],
+            [
+                'name' => 'Jimmy',
+                'email' => 'jimmy@dsa.ae',
+            ],
+        ];
 
-        User::factory()->create(['name' => 'Test User', 'email' => 'test@test.com']);
+        foreach ($users as $userData) {
+            User::factory()->create($userData);
+        }
 
         // Call the PropertySeeder
         $this->call([

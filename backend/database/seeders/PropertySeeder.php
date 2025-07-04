@@ -36,7 +36,7 @@ class PropertySeeder extends Seeder
             ->studio()
             ->available()
             ->create([
-                'owner_id' => $users->random()->id,
+                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
             ]);
     }
 
@@ -52,7 +52,7 @@ class PropertySeeder extends Seeder
                 'property_type' => '2BR',
                 'bedrooms' => 2,
                 'bathrooms' => 2,
-                'owner_id' => $users->random()->id,
+                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
             ]);
 
         // 3BR properties
@@ -62,7 +62,7 @@ class PropertySeeder extends Seeder
                 'property_type' => '3BR',
                 'bedrooms' => 3,
                 'bathrooms' => 3,
-                'owner_id' => $users->random()->id,
+                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
             ]);
 
         // 4BR+ properties
@@ -72,7 +72,7 @@ class PropertySeeder extends Seeder
                 'property_type' => '4BR+',
                 'bedrooms' => 4,
                 'bathrooms' => 4,
-                'owner_id' => $users->random()->id,
+                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
             ]);
     }
 
@@ -85,7 +85,7 @@ class PropertySeeder extends Seeder
             ->luxury()
             ->available()
             ->create([
-                'owner_id' => $users->random()->id,
+                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
             ]);
     }
 
@@ -98,22 +98,22 @@ class PropertySeeder extends Seeder
         Property::factory(12)
             ->available()
             ->create([
-                'property_type' => 'Shared Room',
+                'property_type' => fake()->randomElement(['1BR', '2BR', '3BR', '4BR+', 'Studio']),
                 'room_type' => 'Shared Room',
                 'bedrooms' => 1,
                 'bathrooms' => 1,
-                'owner_id' => $users->random()->id,
+                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
             ]);
 
         // Private rooms
         Property::factory(10)
             ->available()
             ->create([
-                'property_type' => 'Private Room',
+                'property_type' => fake()->randomElement(['1BR', '2BR', '3BR', '4BR+', 'Studio']),
                 'room_type' => 'Private Room',
                 'bedrooms' => 1,
                 'bathrooms' => 1,
-                'owner_id' => $users->random()->id,
+                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
             ]);
     }
 
@@ -130,7 +130,7 @@ class PropertySeeder extends Seeder
                 'amenities' => fake()->randomElements([
                     'WiFi', 'Air Conditioning', 'Parking', 'Public Transport'
                 ], fake()->numberBetween(2, 4)),
-                'owner_id' => $users->random()->id,
+                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
             ]);
     }
 } 

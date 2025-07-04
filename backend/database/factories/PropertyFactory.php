@@ -26,7 +26,7 @@ class PropertyFactory extends Factory
             'Jumeirah', 'Umm Suqeim', 'Al Sufouh', 'Al Quoz', 'Al Khail'
         ];
 
-        $propertyTypes = ['Studio', '1BR', '2BR', '3BR', '4BR+', 'Shared Room', 'Private Room'];
+        $propertyTypes = ['Studio', '1BR', '2BR', '3BR', '4BR+'];
         $roomTypes = ['Entire Place', 'Private Room', 'Shared Room'];
         $currencies = ['AED'];
         $billingCycles = ['Monthly', 'Quarterly', 'Yearly'];
@@ -42,7 +42,6 @@ class PropertyFactory extends Factory
             '2BR' => 2,
             '3BR' => 3,
             '4BR+' => $this->faker->numberBetween(4, 6),
-            'Shared Room', 'Private Room' => 1,
             default => 1
         };
 
@@ -56,10 +55,15 @@ class PropertyFactory extends Factory
             '2BR' => $this->faker->numberBetween(8000, 18000),
             '3BR' => $this->faker->numberBetween(12000, 25000),
             '4BR+' => $this->faker->numberBetween(18000, 40000),
-            'Shared Room' => $this->faker->numberBetween(2000, 5000),
-            'Private Room' => $this->faker->numberBetween(3000, 7000),
             default => $this->faker->numberBetween(5000, 15000)
         };
+
+        // Adjust price based on room type
+        if ($roomType === 'Shared Room') {
+            $basePrice = $this->faker->numberBetween(2000, 5000);
+        } elseif ($roomType === 'Private Room') {
+            $basePrice = $this->faker->numberBetween(3000, 7000);
+        }
 
         $amenities = $this->faker->randomElements([
             'WiFi', 'Air Conditioning', 'Gym', 'Pool', 'Parking', 'Balcony',
