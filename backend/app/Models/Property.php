@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class Property extends Model
 {
@@ -13,7 +15,7 @@ class Property extends Model
         'title',
         'slug',
         'description',
-        'area',
+        'location',
         'address',
         'coordinates',
         'property_type',
@@ -39,6 +41,7 @@ class Property extends Model
     ];
 
     protected $casts = [
+        'location' => 'string',
         'address' => 'array',
         'coordinates' => 'array',
         'amenities' => 'array',
@@ -56,8 +59,21 @@ class Property extends Model
     public function toPublicArray()
     {
         $propertyArray = $this->toArray();
+        if (Auth::check()) {
+            $propertyArray['is_interested'] = $this->hasUserInterest(Auth::user()->id);
+        }
         unset($propertyArray['owner_id']);
         return $propertyArray;
+    }
+
+    public static function createUniqueSlug($title)
+    {
+        $slug = Str::slug($title);
+        $count = self::where('slug', $slug)->count();
+        if ($count > 0) {
+            $slug = $slug . '-' . $count;
+        }
+        return $slug;
     }
 
     /**
@@ -84,5 +100,31 @@ class Property extends Model
     public function reviews()
     {
         return $this->morphMany(Review::class, 'reviewable');
+    }
+
+    /**
+     * Get all interests for this property
+     */
+    public function interests()
+    {
+        return $this->hasMany(PropertyInterest::class);
+    }
+
+
+
+    /**
+     * Check if a user has expressed interest in this property
+     */
+    public function hasUserInterest($userId)
+    {
+        return $this->interests()->where('user_id', $userId)->exists();
+    }
+
+    /**
+     * Get user's interest in this property
+     */
+    public function getUserInterest($userId)
+    {
+        return $this->interests()->where('user_id', $userId)->first();
     }
 }

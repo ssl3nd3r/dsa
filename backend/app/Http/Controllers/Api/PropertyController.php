@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Property;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class PropertyController extends Controller
 {
@@ -15,10 +15,10 @@ class PropertyController extends Controller
     {
         $query = Property::with('owner')->where('is_available', true);
 
-        // Filter by area
-        if ($request->has('area')) {
-            $areas = is_array($request->area) ? $request->area : explode(',', $request->area);
-            $query->whereIn('area', $areas);
+        // Filter by location
+        if ($request->has('location')) {
+            $locations = is_array($request->location) ? $request->location : explode(',', $request->location);
+            $query->whereIn('location', $locations);
         }
 
         // Filter by property type
@@ -73,8 +73,9 @@ class PropertyController extends Controller
     // Get single property
     public function show($slug)
     {
-        $property = Property::with('owner')->where('slug', $slug)->first();
-        
+        $property = Property::with('owner')->where('slug', $slug)->where('is_available', true)->first();
+
+        Log::info('Property:', Property::where('slug', $slug)->get()->toArray());
         if (!$property) {
             return response()->json(['error' => 'Property not found'], 404);
         }
@@ -84,13 +85,13 @@ class PropertyController extends Controller
 
     // Create new property
     public function store(Request $request)
-    {
+    {   
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:100',
             'description' => 'required|string|max:1000',
-            'area' => 'required|string',
-            'address' => 'required|array',
-            'coordinates' => 'nullable|array',
+            'location' => 'required|string',
+            'address' => 'required|string',
+            'coordinates' => 'nullable|string',
             'property_type' => 'required|string',
             'room_type' => 'required|string',
             'size' => 'required|integer',
@@ -99,30 +100,64 @@ class PropertyController extends Controller
             'price' => 'required|numeric|min:0',
             'currency' => 'string|in:AED,USD,EUR',
             'billing_cycle' => 'required|string',
-            'utilities_included' => 'boolean',
+            'utilities_included' => 'nullable|in:true,false,1,0',
             'utilities_cost' => 'numeric|min:0',
-            'amenities' => 'nullable|array',
+            'amenities' => 'nullable|string',
             'available_from' => 'required|date',
             'minimum_stay' => 'integer|min:1',
             'maximum_stay' => 'integer|min:1',
-            'images' => 'nullable|array',
-            'roommate_preferences' => 'nullable|array',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', // 5MB max per image
+            'roommate_preferences' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()->first()], 400);
         }
 
-        $property = Property::create(array_merge($request->all(), [
-            'slug' => Str::slug($request->title),
+        // Handle image uploads
+        $imageUrls = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $path = $image->storeAs('properties', $filename, 'public');
+                $imageUrls[] = asset('storage/' . $path);
+            }
+        }
+
+        // Process JSON strings back to arrays
+        $data = $request->all();
+        
+        // Handle address field
+        if (isset($data['address']) && is_string($data['address'])) {
+            $data['address'] = json_decode($data['address'], true);
+        }
+        
+        // Handle coordinates field
+        if (isset($data['coordinates']) && is_string($data['coordinates'])) {
+            $data['coordinates'] = json_decode($data['coordinates'], true);
+        }
+        
+        // Handle amenities field
+        if (isset($data['amenities']) && is_string($data['amenities'])) {
+            $data['amenities'] = json_decode($data['amenities'], true);
+        }
+        
+        // Handle roommate_preferences field
+        if (isset($data['roommate_preferences']) && is_string($data['roommate_preferences'])) {
+            $data['roommate_preferences'] = json_decode($data['roommate_preferences'], true);
+        }
+
+        $property = Property::create(array_merge($data, [
+            'slug' => Property::createUniqueSlug($request->title),
             'owner_id' => $request->user()->id,
             'currency' => $request->currency ?? 'AED',
-            'utilities_included' => $request->utilities_included ?? false,
+            'utilities_included' => filter_var($request->utilities_included, FILTER_VALIDATE_BOOLEAN),
             'utilities_cost' => $request->utilities_cost ?? 0,
             'minimum_stay' => $request->minimum_stay ?? 1,
             'maximum_stay' => $request->maximum_stay ?? 12,
-            'is_available' => true,
+            'is_available' => false,
             'status' => 'Active',
+            'images' => $imageUrls,
         ]));
 
         return response()->json([
@@ -145,9 +180,9 @@ class PropertyController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'string|max:100',
             'description' => 'string|max:1000',
-            'area' => 'string',
-            'address' => 'array',
-            'coordinates' => 'nullable|array',
+            'location' => 'string',
+            'address' => 'string',
+            'coordinates' => 'nullable|string',
             'property_type' => 'string',
             'room_type' => 'string',
             'size' => 'integer',
@@ -156,15 +191,15 @@ class PropertyController extends Controller
             'price' => 'numeric|min:0',
             'currency' => 'string|in:AED,USD,EUR',
             'billing_cycle' => 'string',
-            'utilities_included' => 'boolean',
+            'utilities_included' => 'nullable|in:true,false,1,0',
             'utilities_cost' => 'numeric|min:0',
-            'amenities' => 'nullable|array',
+            'amenities' => 'nullable|string',
             'available_from' => 'date',
             'minimum_stay' => 'integer|min:1',
             'maximum_stay' => 'integer|min:1',
-            'is_available' => 'boolean',
-            'images' => 'nullable|array',
-            'roommate_preferences' => 'nullable|array',
+            'is_available' => 'nullable|in:true,false,1,0',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', // 5MB max per image
+            'roommate_preferences' => 'nullable|string',
             'status' => 'string|in:Active,Pending,Rented,Inactive',
         ]);
 
@@ -172,7 +207,47 @@ class PropertyController extends Controller
             return response()->json(['error' => $validator->errors()->first()], 400);
         }
 
-        $property->update($request->all());
+        $updateData = $request->all();
+        
+        // Process JSON strings back to arrays
+        if (isset($updateData['address']) && is_string($updateData['address'])) {
+            $updateData['address'] = json_decode($updateData['address'], true);
+        }
+        
+        if (isset($updateData['coordinates']) && is_string($updateData['coordinates'])) {
+            $updateData['coordinates'] = json_decode($updateData['coordinates'], true);
+        }
+        
+        if (isset($updateData['amenities']) && is_string($updateData['amenities'])) {
+            $updateData['amenities'] = json_decode($updateData['amenities'], true);
+        }
+        
+        if (isset($updateData['roommate_preferences']) && is_string($updateData['roommate_preferences'])) {
+            $updateData['roommate_preferences'] = json_decode($updateData['roommate_preferences'], true);
+        }
+        
+        // Convert string boolean values to actual booleans
+        if (isset($updateData['utilities_included'])) {
+            $updateData['utilities_included'] = filter_var($updateData['utilities_included'], FILTER_VALIDATE_BOOLEAN);
+        }
+        if (isset($updateData['is_available'])) {
+            $updateData['is_available'] = filter_var($updateData['is_available'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        // Handle image uploads
+        if ($request->hasFile('images')) {
+            $imageUrls = $property->images ?? []; // Keep existing images
+            
+            foreach ($request->file('images') as $image) {
+                $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $path = $image->storeAs('properties', $filename, 'public');
+                $imageUrls[] = asset('storage/' . $path);
+            }
+            
+            $updateData['images'] = $imageUrls;
+        }
+
+        $property->update($updateData);
 
         return response()->json([
             'message' => 'Property updated successfully',
@@ -191,17 +266,56 @@ class PropertyController extends Controller
             return response()->json(['error' => 'Property not found or access denied'], 404);
         }
 
+        // Delete associated images from storage
+        if ($property->images) {
+            foreach ($property->images as $imageUrl) {
+                $this->deleteImageFromStorage($imageUrl);
+            }
+        }
+
         $property->delete();
 
         return response()->json(['message' => 'Property deleted successfully']);
     }
 
+    // Helper method to delete image from storage
+    private function deleteImageFromStorage($imageUrl)
+    {
+        try {
+            // Extract path from URL
+            $path = str_replace(asset('storage/'), '', $imageUrl);
+            $fullPath = storage_path('app/public/' . $path);
+            
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to delete image: ' . $e->getMessage());
+        }
+    }
+
     // Get user's properties
     public function myProperties(Request $request)
     {
-        $properties = Property::where('owner_id', $request->user()->id)
-                             ->orderBy('created_at', 'desc')
-                             ->paginate($request->get('per_page', 10));
+        $query = Property::where('owner_id', $request->user()->id);
+
+        // Search by title
+        if ($request->has('title')) {
+            $titleTerm = $request->title;
+            $query->where('title', 'like', "%{$titleTerm}%");
+        }
+
+        // Filter by status
+        if ($request->has('is_available')) {
+            if ($request->is_available === 'both') {
+                // Do nothing
+            } else {
+                $query->where('is_available', $request->is_available);
+            }
+        }
+
+        $properties = $query->orderBy('created_at', 'desc')
+                           ->paginate($request->get('per_page', 10));
 
         return response()->json([
             'properties' => $properties->items(),
@@ -225,14 +339,14 @@ class PropertyController extends Controller
             $query->where(function($q) use ($searchTerm) {
                 $q->where('title', 'like', "%{$searchTerm}%")
                   ->orWhere('description', 'like', "%{$searchTerm}%")
-                  ->orWhere('area', 'like', "%{$searchTerm}%");
+                  ->orWhere('location', 'like', "%{$searchTerm}%");
             });
         }
 
         // Apply other filters
-        if ($request->has('area')) {
-            $areas = is_array($request->area) ? $request->area : explode(',', $request->area);
-            $query->whereIn('area', $areas);
+        if ($request->has('location')) {
+            $locations = is_array($request->location) ? $request->location : explode(',', $request->location);
+            $query->whereIn('location', $locations);
         }
         if ($request->has('property_type')) {
             $query->where('property_type', $request->property_type);

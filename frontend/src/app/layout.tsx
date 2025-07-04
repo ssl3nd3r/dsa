@@ -4,6 +4,7 @@ import "./globals.css";
 import { ReduxProvider } from "@/lib/providers";
 import Layout from "@/components/Layouts/Layout";
 import Toast from "@/components/UI/Toast";
+import { Fade } from "@mui/material";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -29,13 +30,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${montserrat.variable} ${kantumruy.variable} antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col min-h-dvh`}
+        className={`${montserrat.variable} ${kantumruy.variable} antialiased text-black dark:text-white flex flex-col min-h-dvh`}
       >
         <ReduxProvider>
           <Toast />
-          <Layout>
-            {children}
-          </Layout>
+            <Layout>
+              {children}
+            </Layout>
         </ReduxProvider>
       </body>
     </html>

@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('profile_image')->nullable();
             
             // AI Matching Fields
-            $table->enum('lifestyle', ['Quiet', 'Active', 'Smoker', 'Non-smoker', 'Pet-friendly', 'No pets'])->nullable();
+            $table->json('lifestyle')->nullable();
             $table->json('personality_traits')->nullable();
-            $table->enum('work_schedule', ['9-5', 'Night shift', 'Remote', 'Flexible', 'Student'])->nullable();
+            $table->string('work_schedule')->nullable();
             $table->json('cultural_preferences')->nullable();
             
             // Accommodation Preferences

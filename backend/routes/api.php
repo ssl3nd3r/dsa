@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ServiceProviderController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\OtpController;
+use App\Http\Controllers\Api\PropertyInterestController;
 
 // Public routes
 Route::post('/register', [UserController::class, 'register']);
@@ -26,15 +27,17 @@ Route::middleware('auth:sanctum')->group(function () {
     // User routes
     Route::get('/user/profile', [UserController::class, 'profile']);
     Route::put('/user/profile', [UserController::class, 'updateProfile']);
+    Route::put('/user/password', [UserController::class, 'changePassword']);
     
     // Property routes
     Route::get('/properties', [PropertyController::class, 'index']);
     Route::get('/properties/search', [PropertyController::class, 'search']);
-    Route::get('/properties/{id}', [PropertyController::class, 'show']);
+    Route::post('/properties/my', [PropertyController::class, 'myProperties']);
+    Route::post('/properties/interested', [PropertyInterestController::class, 'getUserInterestedProperties']);
+    Route::get('/properties/{slug}', [PropertyController::class, 'show']);
     Route::post('/properties', [PropertyController::class, 'store']);
-    Route::put('/properties/{id}', [PropertyController::class, 'update']);
-    Route::delete('/properties/{id}', [PropertyController::class, 'destroy']);
-    Route::get('/properties/my/list', [PropertyController::class, 'myProperties']);
+    Route::put('/properties/{slug}', [PropertyController::class, 'update']);
+    Route::delete('/properties/{slug}', [PropertyController::class, 'destroy']);
     
     // Message routes
     Route::post('/messages', [MessageController::class, 'store']);
@@ -64,6 +67,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/reviews/{reviewId}', [ReviewController::class, 'destroy']);
     Route::get('/reviews/{type}/{id}/statistics', [ReviewController::class, 'statistics']);
     Route::get('/reviews/type/{type}', [ReviewController::class, 'byType']); // users, properties, service-providers
+    
+    // Property Interest routes
+    Route::post('/properties/{propertySlug}/interest', [PropertyInterestController::class, 'expressInterest']);
+    Route::get('/properties/{propertySlug}/interest', [PropertyInterestController::class, 'checkInterest']);
+    Route::delete('/properties/{propertySlug}/interest', [PropertyInterestController::class, 'withdrawInterest']);
 });
 
 // Health check endpoint

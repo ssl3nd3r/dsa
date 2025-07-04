@@ -53,9 +53,6 @@ const initialState: MessageState = {
   unreadCount: 0,
 };
 
-// API base URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-
 // Async thunks
 export const fetchConversations = createAsyncThunk(
   'message/fetchConversations',

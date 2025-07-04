@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // Get the API URL from environment or use a fallback
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://khaki-dove-475271.hostingersite.com/api';
+const API_BASE_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

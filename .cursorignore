@@ -1,0 +1,54 @@
+# Cursor-specific ignore file
+# This file tells Cursor to ignore these files/directories during indexing and search
+
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build outputs
+build/
+dist/
+out/
+.next/
+.vercel/
+
+# Environment files
+.env*
+*.local
+
+# Logs
+*.log
+logs/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Android specific
+*.iml
+.gradle/
+local.properties
+.cxx/
+*.apk
+*.aab
+
+# Backend specific
+uploads/
+
+# Large files that slow down indexing
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Temporary files
+*.tmp
+*.temp
+.cache/ 

@@ -1,12 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@/lib/store';
-import { fetchProperties } from '@/lib/slices/propertySlice';
-import { Property } from '@/lib/slices/propertySlice';
 import PropertyTypeCard from '@/components/UI/PropertyTypeCard';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 

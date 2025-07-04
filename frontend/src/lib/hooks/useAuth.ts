@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { RootState, AppDispatch } from '../store';
 import { fetchUserProfile } from '../slices/authSlice';
-import { log } from 'node:console';
 
 interface UseAuthOptions {
   redirectTo?: string;
@@ -42,19 +41,13 @@ export const useAuth = (options: UseAuthOptions = {}) => {
     token,
     isAuthenticated,
     loading: isLoading,
-    // Helper function to check if user has specific role or permission
-    hasRole: (role: string) => user?.role === role,
-    // Helper function to check if user is property owner
-    isPropertyOwner: () => user?.role === 'owner',
-    // Helper function to check if user is tenant
-    isTenant: () => user?.role === 'tenant',
   };
 };
 
 // Hook for pages that should redirect to dashboard if already authenticated
 export const useGuestAuth = (redirectTo : string = '/dashboard') => {
   const router = useRouter();
-  console.log('useGuestAuth', redirectTo);
+  const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated, loading } = useSelector(
     (state: RootState) => state.auth
   );
@@ -62,10 +55,10 @@ export const useGuestAuth = (redirectTo : string = '/dashboard') => {
   useEffect(() => {
     // If user is already authenticated, redirect to dashboard
     if (!loading && isAuthenticated) {
-      
+      setIsLoading(false);
       router.push(redirectTo);
     }
   }, [isAuthenticated, loading, redirectTo, router]);
 
-  return { isAuthenticated, loading };
+  return { isAuthenticated, loading: isLoading };
 }; 

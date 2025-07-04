@@ -9,8 +9,10 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Hash;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
@@ -65,6 +67,32 @@ class User extends Authenticatable
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        // 'interested_properties',
+        'interested_property_ids',
+    ];
+
+    // /**
+    //  * Get interested properties attribute
+    //  */
+    // public function getInterestedPropertiesAttribute()
+    // {
+    //     return $this->interestedProperties()->with('owner')->get();
+    // }
+
+    /**
+     * Get interested properties IDs attribute
+     */
+    public function getInterestedPropertyIdsAttribute()
+    {
+        return $this->interestedProperties()->pluck('properties.id')->toArray();
+    }
+
+    /**
      * Get public profile data (without password)
      */
     public function toPublicArray()
@@ -108,5 +136,31 @@ class User extends Authenticatable
     public function reviewsWritten()
     {
         return $this->hasMany(Review::class, 'reviewer_id');
+    }
+
+    /**
+     * Get all properties the user has expressed interest in
+     */
+    public function propertyInterests()
+    {
+        return $this->hasMany(PropertyInterest::class);
+    }
+
+    /**
+     * Get properties the user is interested in
+     */
+    public function interestedProperties()
+    {
+        return $this->belongsToMany(Property::class, 'property_interests')
+                    ->withTimestamps();
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        $allowedEmails = [
+            'jimmy@gmail.com',
+        ];
+
+        return in_array($this->email, $allowedEmails);
     }
 }

@@ -20,17 +20,13 @@ return new class extends Migration
             $table->text('description');
             
             // Location
-            $table->enum('area', [
-                'Dubai Marina', 'Downtown Dubai', 'Palm Jumeirah', 'JBR', 'Business Bay',
-                'Dubai Hills Estate', 'Arabian Ranches', 'Emirates Hills', 'Meadows',
-                'Springs', 'Lakes', 'JLT', 'DIFC', 'Sheikh Zayed Road', 'Al Barsha',
-                'Jumeirah', 'Umm Suqeim', 'Al Sufouh', 'Al Quoz', 'Al Khail', 'Other'
-            ]);
+            // options are: Dubai Marina, Downtown Dubai, Palm Jumeirah, JBR, Business Bay, Dubai Hills Estate, Arabian Ranches, Emirates Hills, Meadows, Springs, Lakes, JLT, DIFC, Sheikh Zayed Road, Al Barsha, Jumeirah, Umm Suqeim, Al Sufouh, Al Quoz, Al Khail, Other
+            $table->enum('location', ['Dubai Marina', 'Downtown Dubai', 'Palm Jumeirah', 'JBR', 'Business Bay', 'Dubai Hills Estate', 'Arabian Ranches', 'Emirates Hills', 'Meadows', 'Springs', 'Lakes', 'JLT', 'DIFC', 'Sheikh Zayed Road', 'Al Barsha', 'Jumeirah', 'Umm Suqeim', 'Al Sufouh', 'Al Quoz', 'Al Khail', 'Other']);
             $table->json('address');
             $table->json('coordinates')->nullable();
             
             // Property Details
-            $table->enum('property_type', ['Studio', '1BR', '2BR', '3BR', '4BR+', 'Shared Room', 'Private Room']);
+            $table->enum('property_type', ['Studio', '1BR', '2BR', '3BR', '4BR+']);
             $table->enum('room_type', ['Entire Place', 'Private Room', 'Shared Room']);
             $table->integer('size'); // in sq ft
             $table->integer('bedrooms');

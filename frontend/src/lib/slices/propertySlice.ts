@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import api from '../api';
+import MyProperties from '@/components/Layouts/Proflie/MyProperties';
 
 // Types
 export interface Property {
@@ -15,29 +16,29 @@ export interface Property {
   address: {
     street: string;
     city: string;
-    state: string;
-    country: string;
-    postal_code: string;
+    state?: string;
+    country?: string;
+    postal_code?: string;
   };
-  coordinates?: {
+  coordinates: {
     lat: number;
-    lng: number;
+    lng: number;  
   };
   bedrooms: number;
   bathrooms: number;
-  area: string;
+  location: string;
   size: number;
   utilities_included: boolean;
   utilities_cost: number;
   amenities: string[];
   images: string[];
-  available_from: string;
-  minimum_stay: number;
-  maximum_stay: number;
-  is_available: boolean;
-  roommate_preferences: string[];
-  matching_score: number;
-  status: string;
+  available_from?: string;
+  minimum_stay?: number;
+  maximum_stay?: number;
+  is_available?: boolean;
+  roommate_preferences?: string[];
+  matching_score?: number;
+  status?: string;
   // Additional properties for the property page
   type?: string;
   city?: string;
@@ -47,7 +48,7 @@ export interface Property {
   gym?: boolean;
   pool?: boolean;
   security?: boolean;
-  owner: {
+  owner?: {
     id: number;
     name: string;
     email: string;
@@ -56,7 +57,7 @@ export interface Property {
     updated_at: string;
     phone?: string;
     profile_image?: string;
-    lifestyle?: string;
+    lifestyle?: string | string[];
     personality_traits?: string;
     work_schedule?: string;
     cultural_preferences?: string;
@@ -67,23 +68,26 @@ export interface Property {
     is_verified: boolean;
     is_active: boolean;
   };
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
+  is_interested?: boolean;
 }
 
 export interface PropertyFilters {
   property_type?: string;
   min_price?: number | undefined;
   max_price?: number | undefined;
-  area?: Array<{value: string, label: string}>;
+  location?: Array<{value: string, label: string}>;
   bedrooms?: number;
   bathrooms?: number;
   furnished?: boolean;
   parking?: boolean;
-  lifestyle?: string;
+  lifestyle?: string | string[];
   personality_traits?: Array<{value: string, label: string}>;
   work_schedule?: string;
   cultural_preferences?: Array<{value: string, label: string}>;
+  sort_by?: string;
+  sort_order?: 'desc' | 'asc';
 }
 
 export interface PropertyState {
@@ -95,6 +99,14 @@ export interface PropertyState {
   totalCount: number;
   currentPage: number;
   lastPage: number;
+  interestedProperties: Property[];
+  interestedPropertiesTotalCount: number;
+  interestedPropertiesCurrentPage: number;
+  interestedPropertiesLastPage: number;
+  myProperties: Property[];
+  myPropertiesTotalCount: number;
+  myPropertiesCurrentPage: number;
+  myPropertiesLastPage: number;
 }
 
 const initialState: PropertyState = {
@@ -106,13 +118,21 @@ const initialState: PropertyState = {
   totalCount: 0,
   currentPage: 1,
   lastPage: 1,
+  interestedProperties: [],
+  interestedPropertiesTotalCount: 0,
+  interestedPropertiesCurrentPage: 1,
+  interestedPropertiesLastPage: 1,
+  myProperties: [],
+  myPropertiesTotalCount: 0,
+  myPropertiesCurrentPage: 1,
+  myPropertiesLastPage: 1,
 };
 
 
 // Async thunks
 export const fetchProperties = createAsyncThunk(
   'property/fetchProperties',
-  async (params: { page?: number; limit?: number; filters?: PropertyFilters }, { getState, rejectWithValue }) => {
+  async (params: { page?: number; limit?: number; filters?: PropertyFilters }, { rejectWithValue }) => {
     try {
       const { page = 1, limit = 10, filters = {} } = params;
 
@@ -141,7 +161,7 @@ export const fetchProperties = createAsyncThunk(
 
 export const fetchPropertyBySlug = createAsyncThunk(
   'property/fetchPropertyBySlug',
-  async (propertySlug: string, { getState, rejectWithValue }) => {
+  async (propertySlug: string, { rejectWithValue }) => {
     try {
       const response = await api.get(`/properties/${propertySlug}`);
       return response.data;
@@ -153,14 +173,42 @@ export const fetchPropertyBySlug = createAsyncThunk(
 
 export const createProperty = createAsyncThunk(
   'property/createProperty',
-  async (propertyData: Partial<Property>, { getState, rejectWithValue }) => {
+  async (propertyData: Partial<Property>, { getState, rejectWithValue, dispatch }) => {
     try {
       const { auth } = getState() as { auth: { token: string | null } };
       if (!auth.token) {
         throw new Error('No token available');
       }
 
-      const response = await api.post(`/properties`, propertyData);
+      console.log(propertyData);
+
+      // Create FormData for multipart/form-data submission
+      const formData = new FormData();
+      
+      Object.entries(propertyData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            if (key === 'images' || key === 'files') {
+              value.forEach(v => formData.append(key + '[]', v));
+            }
+            else {
+              formData.append(key, JSON.stringify(value));
+            }
+          } else if (typeof value === 'object') {
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, String(value));
+          }
+        }
+      });
+
+      dispatch(fetchUserMyProperties({ page: 1, limit: 10, title: '', is_available: true }));
+
+      const response = await api.post(`/properties`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error || 'Failed to create property');
@@ -170,14 +218,37 @@ export const createProperty = createAsyncThunk(
 
 export const updateProperty = createAsyncThunk(
   'property/updateProperty',
-  async ({ propertySlug, propertyData }: { propertySlug: string; propertyData: Partial<Property> }, { getState, rejectWithValue }) => {
+  async ({ propertySlug, propertyData }: { propertySlug: string; propertyData: Partial<Property> & { images?: File[] } }, { getState, rejectWithValue }) => {
     try {
       const { auth } = getState() as { auth: { token: string | null } };
       if (!auth.token) {
         throw new Error('No token available');
       }
+      // Create FormData for multipart/form-data submission
+      const formData = new FormData();
+      
+      Object.entries(propertyData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            if (key === 'images' || key === 'files') {
+              value.forEach(v => formData.append(key + '[]', v));
+            }
+            else {
+              formData.append(key, JSON.stringify(value));
+            }
+          } else if (typeof value === 'object') {
+            formData.append(key, JSON.stringify(value));
+          } else {
+            formData.append(key, String(value));
+          }
+        }
+      });
 
-      const response = await api.put(`/properties/${propertySlug}`, propertyData);
+      const response = await api.put(`/properties/${propertySlug}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error || 'Failed to update property');
@@ -202,24 +273,86 @@ export const deleteProperty = createAsyncThunk(
   }
 );
 
-export const expressInterest = createAsyncThunk(
-  'property/expressInterest',
-  async ({ propertySlug, message }: { propertySlug: string; message: string }, { getState, rejectWithValue }) => {
+export const addToInterests = createAsyncThunk(
+  'property/addToInterests',
+  async (propertySlug: string, { getState, rejectWithValue, dispatch }) => {
     try {
       const { auth } = getState() as { auth: { token: string | null } };
       if (!auth.token) {
         throw new Error('No token available');
       }
 
-      const response = await api.post(`/properties/${propertySlug}/interest`, { message });
+      const response = await api.post(`/properties/${propertySlug}/interest`);
+      
+      // Refetch user profile to get updated interested properties
+      await dispatch(fetchPropertyBySlug(propertySlug));
+      
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.error || 'Failed to express interest');
+      return rejectWithValue(error.response?.data?.error || 'Failed to add to interests');
     }
   }
 );
 
-// Slice
+export const removeFromInterests = createAsyncThunk(
+  'property/removeFromInterests',
+  async (propertySlug: string, { getState, rejectWithValue, dispatch }) => {
+    try {
+      const { auth } = getState() as { auth: { token: string | null } };
+      if (!auth.token) {
+        throw new Error('No token available');
+      }
+
+      const response = await api.delete(`/properties/${propertySlug}/interest`);
+      
+      // Refetch user profile to get updated interested properties
+      await dispatch(fetchPropertyBySlug(propertySlug));
+      
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error || 'Failed to remove from interests');
+    }
+  }
+);
+
+export const fetchUserInterestedProperties = createAsyncThunk(
+  'property/fetchUserInterestedProperties',
+  async (params: { page?: number; limit?: number, title?: string }, { getState, rejectWithValue }) => {
+    const { page = 1, limit = 10, title = '' } = params;
+
+    try {
+      const { auth } = getState() as { auth: { token: string | null } };
+      if (!auth.token) {
+        throw new Error('No token available');
+      }
+      const response = await api.post(`/properties/interested`, { page, limit, title });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error || 'Failed to fetch user interested properties');
+    }
+  }
+);
+
+export const fetchUserMyProperties = createAsyncThunk(
+  'property/fetchUserMyProperties',
+  async (params: { page?: number; limit?: number, title?: string, is_available?: boolean | 'both' }, { getState, rejectWithValue }) => {
+    const { page = 1, limit = 10, title = '', is_available = true } = params;
+
+    try {
+      const { auth } = getState() as { auth: { token: string | null } };
+      if (!auth.token) {
+        throw new Error('No token available');
+      }
+
+      const response = await api.post(`/properties/my`, { page, limit, title, is_available });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error || 'Failed to fetch user my properties');
+    }
+  }
+);
+  
+  // Slice
 const propertySlice = createSlice({
   name: 'property',
   initialState,
@@ -253,7 +386,6 @@ const propertySlice = createSlice({
       })
       .addCase(fetchProperties.fulfilled, (state, action) => {
         state.loading = false;
-        console.log(action.payload);
         const { properties, pagination } = action.payload;
         
         state.properties = properties;
@@ -327,18 +459,64 @@ const propertySlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Express Interest
-      .addCase(expressInterest.pending, (state) => {
+      // Add to Interests
+      .addCase(addToInterests.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(expressInterest.fulfilled, (state) => {
+      .addCase(addToInterests.fulfilled, (state) => {
         state.loading = false;
       })
-      .addCase(expressInterest.rejected, (state, action) => {
+      .addCase(addToInterests.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      });
+      })
+      // Remove from Interests
+      .addCase(removeFromInterests.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(removeFromInterests.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(removeFromInterests.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // Fetch User Interested Properties
+      .addCase(fetchUserInterestedProperties.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserInterestedProperties.fulfilled, (state, action) => {
+        state.loading = false;  
+        const { properties, pagination } = action.payload;
+        state.interestedProperties = properties;
+        state.interestedPropertiesTotalCount = pagination.total;
+        state.interestedPropertiesCurrentPage = pagination.current_page;
+        state.interestedPropertiesLastPage = pagination.last_page;
+      })
+      .addCase(fetchUserInterestedProperties.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // Fetch User My Properties
+      .addCase(fetchUserMyProperties.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserMyProperties.fulfilled, (state, action) => {
+        state.loading = false;
+        const { properties, pagination } = action.payload;
+        state.myProperties = properties;
+        state.myPropertiesTotalCount = pagination.total;
+        state.myPropertiesCurrentPage = pagination.current_page;
+        state.myPropertiesLastPage = pagination.last_page;
+      })
+      .addCase(fetchUserMyProperties.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
   },
 });
 

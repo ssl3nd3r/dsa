@@ -11,7 +11,9 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@hookform/resolvers": "^5.1.1",
     "@mui/material": "^7.1.2",
+    "react-hook-form": "^7.59.0",
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.10.0",
     "embla-carousel-react": "^8.6.0",
@@ -21,7 +23,8 @@
     "react-hot-toast": "^2.5.2",
     "react-redux": "^9.2.0",
     "react-select": "^5.10.1",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

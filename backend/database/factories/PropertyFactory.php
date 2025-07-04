@@ -19,7 +19,7 @@ class PropertyFactory extends Factory
      */
     public function definition(): array
     {
-        $areas = [
+        $locations = [
             'Dubai Marina', 'Downtown Dubai', 'Palm Jumeirah', 'JBR', 'Business Bay',
             'Dubai Hills Estate', 'Arabian Ranches', 'Emirates Hills', 'Meadows',
             'Springs', 'Lakes', 'JLT', 'DIFC', 'Sheikh Zayed Road', 'Al Barsha',
@@ -77,13 +77,10 @@ class PropertyFactory extends Factory
             'title' => $this->faker->sentence(3, 6),
             'slug' => Str::slug($this->faker->sentence(3, 6)),
             'description' => $this->faker->paragraphs(3, true),
-            'area' => $this->faker->randomElement($areas),
+            'location' => $this->faker->randomElement($locations),
             'address' => [
                 'street' => $this->faker->streetAddress(),
                 'city' => 'Dubai',
-                'state' => 'Dubai',
-                'country' => 'UAE',
-                'postal_code' => $this->faker->postcode()
             ],
             'coordinates' => [
                 'lat' => $this->faker->latitude(25.0, 25.5),
@@ -158,7 +155,7 @@ class PropertyFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'price' => $this->faker->numberBetween(15000, 50000),
-            'area' => $this->faker->randomElement(['Palm Jumeirah', 'Downtown Dubai', 'Dubai Marina']),
+            'location' => $this->faker->randomElement(['Palm Jumeirah', 'Downtown Dubai', 'Dubai Marina']),
             'amenities' => $this->faker->randomElements([
                 'WiFi', 'Air Conditioning', 'Gym', 'Pool', 'Parking', 'Balcony',
                 'Dishwasher', 'Washing Machine', 'Furnished', 'Security', 'Concierge',

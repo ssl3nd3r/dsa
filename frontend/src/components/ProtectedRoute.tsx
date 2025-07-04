@@ -2,6 +2,7 @@
 
 import { ReactNode } from 'react';
 import { useAuth } from '../lib/hooks/useAuth';
+import Loading from '../app/loading';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -24,11 +25,7 @@ export const ProtectedRoute = ({
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 dark:border-white border-black mx-auto mb-4"></div>
-        </div>
-      </div>
+      <Loading />
     );
   }
 

@@ -6,7 +6,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { AppDispatch, RootState } from '@/lib/store';
 import { clearError, removeOtpState, completeLogin } from '@/lib/slices/authSlice';
 import { useGuestAuth } from '@/lib/hooks/useAuth';
-import TextInput from '@/components/UI/TextInput';
+import TextInput from '@/components/UI/Inputs/TextInput';
+import OtpInput from '@/components/UI/Inputs/OtpInput';
 import { errorToast } from '@/components/UI/Toast';
 import Button from '@/components/UI/Button';
 
@@ -40,10 +41,17 @@ export default function VerifyLoginPage() {
     dispatch(completeLogin(formData));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleOtpChange = (otpValue: string) => {
+    setFormData({
+      ...formData,
+      otp_code: otpValue,
     });
   };
 
@@ -73,22 +81,19 @@ export default function VerifyLoginPage() {
               value={formData.email}
               onChange={handleChange}
             />
-            <TextInput
-              label="OTP Code"
-              placeholder="OTP Code"
-              name="otp_code"
-              type="number"
-              autoComplete="otp_code"
-              required
+            <OtpInput
               value={formData.otp_code}
-              onChange={handleChange}
+              onChange={handleOtpChange}
+              length={6}
+              disabled={loading}
+              label="OTP Code"
             />
           </div>
 
           <div>
             <Button
               type="submit"
-              className='w-full group'
+              className='w-full group mt-4'
               disabled={loading}
             >
               {loading ? (

@@ -37,13 +37,10 @@ const initialState: ServiceProviderState = {
   filters: {},
 };
 
-// API base URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-
 // Async thunks
 export const fetchServiceProviders = createAsyncThunk(
   'serviceProvider/fetchServiceProviders',
-  async (filters: { services?: string[]; areas?: string[]; minRating?: number } = {}, { getState, rejectWithValue }) => {
+  async (filters: { services?: string[]; areas?: string[]; minRating?: number } = {}, { rejectWithValue }) => {
     try {
       const queryParams = new URLSearchParams();
       if (filters?.services) {
@@ -66,7 +63,7 @@ export const fetchServiceProviders = createAsyncThunk(
 
 export const fetchServiceProviderById = createAsyncThunk(
   'serviceProvider/fetchServiceProviderById',
-  async (providerId: string, { getState, rejectWithValue }) => {
+  async (providerId: string, { rejectWithValue }) => {
     try {
       const response = await api.get(`/service-provider/${providerId}`);
       return response.data;

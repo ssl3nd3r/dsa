@@ -7,7 +7,7 @@ import { loginUser, clearError, removeOtpState } from '@/lib/slices/authSlice';
 import { useGuestAuth } from '@/lib/hooks/useAuth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import TextInput from '@/components/UI/TextInput';
+import TextInput from '@/components/UI/Inputs/TextInput';
 import {errorToast} from '@/components/UI/Toast';
 import Button from '@/components/UI/Button';
 
@@ -26,13 +26,13 @@ export default function LoginPage() {
   useEffect(() => {
     dispatch(clearError());
     dispatch(removeOtpState());
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (otpRequired) {
       router.push(`/verify-login?email=${formData.email}`);
     }
-  }, [otpRequired, router]);
+  }, [otpRequired, router, formData.email]);
 
   useEffect(() => {
     if (error) {
@@ -46,7 +46,7 @@ export default function LoginPage() {
     dispatch(loginUser(formData));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -76,6 +76,7 @@ export default function LoginPage() {
               type="email"
               autoComplete="email"
               required
+              disabled={loading}
               value={formData.email}
               onChange={handleChange}
               placeholder="Email address"
@@ -86,6 +87,7 @@ export default function LoginPage() {
               type="password"
               autoComplete="current-password"
               required
+              disabled={loading}
               value={formData.password}
               onChange={handleChange}
               placeholder="Password"

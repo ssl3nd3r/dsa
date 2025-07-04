@@ -3,22 +3,24 @@ import api from '../api';
 
 // Types
 export interface User {
-  _id: string;
-  email: string;
+  id: number;
   name: string;
+  email: string;
+  email_verified_at?: string;
   phone?: string;
-  role?: 'tenant' | 'owner' | 'admin';
-  lifestyle?: string;
-  personalityTraits?: string[];
-  workSchedule?: string;
-  culturalPreferences?: string[];
-  budget?: number;
-  preferredAreas?: string[];
-  moveInDate?: string;
-  leaseDuration?: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  profile_image?: string;
+  lifestyle?: string[] | 'Quiet' | 'Active' | 'Smoker' | 'Non-smoker' | 'Pet-friendly' | 'No pets';
+  personality_traits?: string[];
+  work_schedule?: '9-5' | 'Night shift' | 'Remote' | 'Flexible' | 'Student';
+  cultural_preferences?: string[];
+  budget?: { min?: number; max?: number };
+  preferred_areas?: string[];
+  move_in_date?: string;
+  lease_duration?: '1-3 months' | '3-6 months' | '6-12 months' | '1+ years';
+  is_verified: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AuthState {
@@ -41,9 +43,6 @@ const initialState: AuthState = {
   otpEmail: null,
 };
 
-// API base URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-
 // Async thunks
 export const registerUser = createAsyncThunk(
   'auth/register',
@@ -51,10 +50,10 @@ export const registerUser = createAsyncThunk(
     email: string;
     name: string;
     password: string;
-    lifestyle?: string;
-    personalityTraits?: string[];
-    workSchedule?: string;
-    culturalPreferences?: string[];
+    lifestyle?: string[] | 'Quiet' | 'Active' | 'Smoker' | 'Non-smoker' | 'Pet-friendly' | 'No pets';
+    personality_traits?: string[];
+    work_schedule?: '9-5' | 'Night shift' | 'Remote' | 'Flexible' | 'Student';
+    cultural_preferences?: string[];
   }, { rejectWithValue }) => {
     try {
       const response = await api.post('/register', userData);
@@ -71,9 +70,9 @@ export const completeRegister = createAsyncThunk(
     name: string;
     email: string;
     password: string;
-    lifestyle: string;
+    lifestyle: string[] | 'Quiet' | 'Active' | 'Smoker' | 'Non-smoker' | 'Pet-friendly' | 'No pets';
     personality_traits?: string[];
-    work_schedule: string;
+    work_schedule: '9-5' | 'Night shift' | 'Remote' | 'Flexible' | 'Student';
     cultural_preferences?: string[];
     otp_code: string;
   }, { rejectWithValue }) => {
@@ -202,7 +201,19 @@ export const fetchUserProfile = createAsyncThunk(
 
 export const updateUserProfile = createAsyncThunk(
   'auth/updateProfile',
-  async (profileData: Partial<User>, { getState, rejectWithValue }) => {
+  async (profileData: {
+    name?: string;
+    phone?: string;
+    profile_image?: string;
+    lifestyle?: string[] | 'Quiet' | 'Active' | 'Smoker' | 'Non-smoker' | 'Pet-friendly' | 'No pets';
+    personality_traits?: string[];
+    work_schedule?: string;
+    cultural_preferences?: string[];
+    budget?: { min?: number; max?: number };
+    preferred_areas?: string[];
+    move_in_date?: string;
+    lease_duration?: '1-3 months' | '3-6 months' | '6-12 months' | '1+ years';
+  }, { getState, rejectWithValue }) => {
     try {
       const { auth } = getState() as { auth: AuthState };
       if (!auth.token) {
@@ -213,6 +224,19 @@ export const updateUserProfile = createAsyncThunk(
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.error || 'Failed to update profile');
+    }
+  }
+);
+
+export const changePassword = createAsyncThunk(
+
+  'auth/changePassword',
+  async (passwordData: { current_password: string; new_password: string, confirm_password: string }, { rejectWithValue }) => {
+    try {
+      const response = await api.put('/user/password', passwordData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.error || 'Failed to change password');
     }
   }
 );
@@ -359,7 +383,7 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(verifyRegisterOtp.fulfilled, (state, action) => {
+      .addCase(verifyRegisterOtp.fulfilled, (state) => {
         state.loading = false;
         // OTP verified successfully, ready for registration completion
       })
@@ -372,7 +396,7 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(resendRegisterOtp.fulfilled, (state, action) => {
+      .addCase(resendRegisterOtp.fulfilled, (state) => {
         state.loading = false;
         // OTP resent successfully
       })
@@ -399,7 +423,7 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(verifyLoginOtp.fulfilled, (state, action) => {
+      .addCase(verifyLoginOtp.fulfilled, (state) => {
         state.loading = false;
         // OTP verified successfully, ready for login completion
       })
@@ -412,7 +436,7 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(resendLoginOtp.fulfilled, (state, action) => {
+      .addCase(resendLoginOtp.fulfilled, (state) => {
         state.loading = false;
         // OTP resent successfully
       })
@@ -450,8 +474,21 @@ const authSlice = createSlice({
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      // Change Password
+      .addCase(changePassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
-  },
+    },
 });
 
 export const { logout, clearError, setToken, clearOtpState, removeOtpState } = authSlice.actions;

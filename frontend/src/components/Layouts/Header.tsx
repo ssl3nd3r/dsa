@@ -15,7 +15,7 @@ export default function Header() {
   const dispatch = useDispatch<AppDispatch>();
   const [searchOpen, setSearchOpen] = useState(false);
   return (
-      <div className='flex justify-between items-center p-4'>
+      <div className='flex sticky top-0 z-50 bg-[var(--background)] justify-between items-center p-4'>
         <div className='flex items-center gap-4'>
           <Link href='/'>
             <MainLogo size={34} />
