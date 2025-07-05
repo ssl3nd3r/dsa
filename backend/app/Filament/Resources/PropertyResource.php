@@ -257,6 +257,12 @@ class PropertyResource extends Resource
                         '4BR+' => '4BR+',
                         'Studio' => 'Studio',
                     ]),
+                SelectFilter::make('room_type')
+                    ->options([
+                        'Entire Place' => 'Entire Place',
+                        'Private Room' => 'Private Room',
+                        'Shared Room' => 'Shared Room',
+                    ]),
                 TernaryFilter::make('is_available')
                     ->label('Available Properties'),
                 SelectFilter::make('owner_id')
