@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import RangeSlider from './Inputs/RangeSlider'
 import Select from './Inputs/Select'
 import Button from './Button'
@@ -15,7 +15,7 @@ interface SearchParams {
 export default function SearchComponent({params, onHandleSearch, maxWidth}: SearchParams) {
   const router = useRouter();  
 
-  const [searchParams, setSearchParams] = useState<PropertyFilters>(params ?? {
+  const [searchParams, setSearchParams] = useState<PropertyFilters>({
     min_price: 1000,
     max_price: 600000,
     billing_cycle: BILLING_CYCLES[0],
@@ -24,6 +24,21 @@ export default function SearchComponent({params, onHandleSearch, maxWidth}: Sear
     room_type: "",
     address: "",
   });
+
+  useEffect (() => {
+    // setTimeout(() => {
+    //   setSearchParams(params ?? {
+    //     min_price: 1000,
+    //     max_price: 600000,
+    //       billing_cycle: BILLING_CYCLES[0],
+    //     });
+    // }, 300);
+
+    if (params) {
+      console.log(params);
+      setSearchParams(params);
+    }  
+  }, [params]);
 
   const handleSearch = () => {
     const params = new URLSearchParams();

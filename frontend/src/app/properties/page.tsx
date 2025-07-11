@@ -16,7 +16,7 @@ import Loading from "@/components/Layouts/loading";
 function PropertiesContent() {
   const searchParams = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();
-  const { properties, error, currentPage, lastPage } = useSelector((state: RootState) => state.property);
+  const { properties, error, currentPage, lastPage, totalCount } = useSelector((state: RootState) => state.property);
   const [params, setParams] = useState<PropertyFilters>()
   
   const sortByOptions = [
@@ -26,35 +26,61 @@ function PropertiesContent() {
     {value: 'created_at,desc', label: 'Oldest'}
   ]
 
-  const getProperties = useCallback(async (page: number, noSetParams: boolean = false) => {
+  // Separate function for fetching properties without setting params
+  const fetchPropertiesData = useCallback(async (page: number, customParams?: PropertyFilters) => {
     const filters: Record<string, string> = {};
     for (const [key, value] of searchParams.entries()) {
       filters[key] = value; 
     }
-    if (!noSetParams) {
-      setParams(mapFilters(filters)); 
-    }
+    
+    const effectiveParams = customParams || params;
     dispatch(fetchProperties({
       page,
       limit: 10,
       filters: {
         ...filters,
-        sort_by: params?.sort_by || 'created_at',
-        sort_order: params?.sort_order || 'desc'
+        sort_by: effectiveParams?.sort_by || 'created_at',
+        sort_order: effectiveParams?.sort_order || 'desc'
       }
     }))
   }, [searchParams, dispatch, params])
 
+  // Function for initial load and search param changes
+  const getProperties = useCallback(async (page: number) => {
+    const filters: Record<string, string> = {};
+    for (const [key, value] of searchParams.entries()) {
+      filters[key] = value; 
+    }
+    
+    if (Object.keys(filters).length === 0) {
+      return;
+    }
 
+    const mappedParams = mapFilters(filters);
+    setParams(mappedParams);
+    
+    dispatch(fetchProperties({
+      page,
+      limit: 10,
+      filters: {
+        ...filters,
+        sort_by: mappedParams?.sort_by || 'created_at',
+        sort_order: mappedParams?.sort_order || 'desc'
+      }
+    }))
+  }, [searchParams, dispatch])
+
+  // Initial load and when search params change
   useEffect(() => {
     getProperties(1);
   }, [searchParams]);
 
+  // When params change (sorting, etc.), refetch with current page
   useEffect(() => {
-    if (currentPage && currentPage !== 1) {
-      getProperties(currentPage, true);
+    if (params && currentPage) {
+      fetchPropertiesData(currentPage, params);
     }
-  }, [params]);
+  }, [params?.sort_by, params?.sort_order]); // Only depend on specific params that should trigger refetch
 
   return (
     <div className="flex-1 p-4 relative">
@@ -69,9 +95,15 @@ function PropertiesContent() {
       properties.length > 0 
       ? 
       <>
-        <div className="mt-10 flex justify-end max-w-[1200px] mx-auto">
+        <div className="mt-10 flex justify-between md:flex-row flex-col md:items-center max-w-[1200px] mx-auto gap-y-4">
+          <div className="flex items-center gap-2">
+            <p><span className="font-semibold text-lg">{totalCount}</span> listings found</p>
+          </div>
           <Select
             label=""
+            className="md:w-[240px] w-full"
+            minWidth="unset"
+            maxWidth="unset"
             placeholder="Sort by"
             options={sortByOptions}
             value={params?.sort_by ? sortByOptions.find(option => option.value === `${params.sort_by},${params.sort_order}`) : undefined}
@@ -90,7 +122,7 @@ function PropertiesContent() {
             <Button 
               className="disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
               disabled={currentPage === 1}
-              onClick={() => getProperties(currentPage - 1, true)}
+              onClick={() => fetchPropertiesData(currentPage - 1)}
             >
               Previous
             </Button>
@@ -100,7 +132,7 @@ function PropertiesContent() {
             <Button 
               className="disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
               disabled={currentPage === lastPage}
-              onClick={() => getProperties(currentPage + 1, true)}
+              onClick={() => fetchPropertiesData(currentPage + 1)}
             >
               Next
             </Button>
@@ -108,9 +140,15 @@ function PropertiesContent() {
         </div>
       </>
       :
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center h-full">
+      [...searchParams.entries()].length === 0
+      ?
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
+        <h1 className="text-2xl font-bold">Please set some filters to start your search</h1>
+      </div>
+      :
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold">No properties found</h1>
-        <p>Please try again later</p>
+        <p>Please adjust your filters and try again.</p>
       </div>
       }
     </div>  

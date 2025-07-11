@@ -50,3 +50,17 @@ export function mapFilters(filters: any): PropertyFilters {
   }
   return res;
 }
+
+export function formatSelectValue(value: any) {
+  if (typeof value === 'string') {
+    if (value === '') {
+      return null;
+    }
+    else {
+      return {value: value, label: value};
+    }
+  }
+  else if (typeof value === 'object') {
+    return value;
+  }
+}

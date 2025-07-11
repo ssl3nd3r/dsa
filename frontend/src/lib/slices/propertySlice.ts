@@ -73,8 +73,8 @@ export interface Property {
 }
 
 export interface PropertyFilters {
-  property_type?: string;
-  room_type?: string;
+  property_type?: string | {value: string, label: string};
+  room_type?: string | {value: string, label: string};
   min_price?: number | undefined;
   max_price?: number | undefined;
   location?: Array<{value: string, label: string}>;
@@ -369,11 +369,11 @@ const propertySlice = createSlice({
     },
     setFilters: (state, action: PayloadAction<PropertyFilters>) => {
       state.filters = action.payload;
-      state.currentPage = 1;
+      // state.currentPage = 1;
     },
     clearFilters: (state) => {
       state.filters = {};
-      state.currentPage = 1;
+      // state.currentPage = 1;
     },
     setCurrentProperty: (state, action: PayloadAction<Property | null>) => {
       state.currentProperty = action.payload;
@@ -396,7 +396,7 @@ const propertySlice = createSlice({
         const { properties, pagination } = action.payload;
         
         state.properties = properties;
-        state.totalCount = pagination.total_count;
+        state.totalCount = pagination.total;
         state.currentPage = pagination.current_page;
         state.lastPage = pagination.last_page;
       })

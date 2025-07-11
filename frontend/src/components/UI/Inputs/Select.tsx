@@ -1,23 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import SelectComponent from 'react-select'
 import { useTheme } from '@/lib/hooks/useTheme';
+import { formatSelectValue } from '@/lib/helpers';
 
 interface CustomSelectProps {
   options: any;
   required?: boolean;
   label?: string;
+  maxWidth?: string;
+  minWidth?: string;
   onChange: (value: any) => void;
   isMulti?: boolean;
   value?: any;
   placeholder?: string; 
   notClearable?: boolean;
+  className?: string;
 }
 
-export default function Select({options, label, onChange, isMulti = false, value, placeholder, required = false, notClearable = false}: CustomSelectProps) {
+export default function Select({options, label, onChange, isMulti = false, value, placeholder, required = false, notClearable = false, maxWidth = '100%', minWidth = '240px', className = ''}: CustomSelectProps) {
+
+  const [inputValue, setInputValue] = useState(value);
+
+  useEffect(() => {
+    setInputValue(formatSelectValue(value));
+  }, [value]);
+
+  const handleChange = (value: any) => {
+    setInputValue(value);
+    onChange(value);
+  }
 
   const {theme, BLACK, WHITE} = useTheme();
   return (
-    <div className='flex flex-col gap-1 text-sm text-black dark:text-white'>
+    <div className={`flex flex-col gap-1 text-sm text-black dark:text-white ${className}`}>
       {label && <p>{label}</p>}
       <SelectComponent
         isClearable={!notClearable}
@@ -25,16 +40,17 @@ export default function Select({options, label, onChange, isMulti = false, value
         options={options}
         required={required}
         placeholder={placeholder ?? `Select ${label}`}
-        onChange={onChange}
+        onChange={handleChange}
         isMulti={isMulti}
-        defaultValue={value}
+        value={inputValue}
         styles={{
           control: (provided) => ({
             ...provided,
             backgroundColor: theme === 'dark' ? BLACK : WHITE,
             color: theme === 'dark' ? WHITE : BLACK,
             borderRadius: '6px',
-            minWidth: '240px',
+            minWidth: minWidth,
+            maxWidth: maxWidth,
             border: `1px solid ${theme === 'dark' ? WHITE : BLACK}`,
             outline: 'none !important',
             boxShadow: 'none !important',

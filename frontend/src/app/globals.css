@@ -94,6 +94,7 @@ body {
 
 .logo {
   font-family: var(--font-kantumruy), system-ui, sans-serif;
+  font-weight: 500;
 }
 
 /* Custom utility classes */

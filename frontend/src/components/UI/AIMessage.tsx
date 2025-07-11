@@ -32,7 +32,7 @@ export default function AIMessage({ message }: { message: Message }) {
             <div className='mt-4'>
               <div className='grid grid-cols-1 gap-2'>
                 {message.properties.map((property) => (
-                  <RouteLink key={property.slug+'-'+property.id} href={`/properties/${property.slug}`} className='flex items-center gap-1'> <LinkIcon size={12} className='inline' /> <span>{property.title}</span></RouteLink>
+                  <RouteLink key={property.slug+'-'+property.id} href={`/properties/${property.slug}`}> <LinkIcon size={12} className='inline' /> <span>{property.title}</span></RouteLink>
                 ))}
               </div>
             </div>

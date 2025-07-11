@@ -12,7 +12,7 @@ export const errorToast = (message: string) => {
 export default function Toast() {
   return (
     <Toaster 
-      position="bottom-right"
+      position="top-center"
       toastOptions={{
         success: {
           className: 'bg-green-500 text-white',
