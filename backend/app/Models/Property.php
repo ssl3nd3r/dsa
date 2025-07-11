@@ -69,10 +69,15 @@ class Property extends Model
     public static function createUniqueSlug($title)
     {
         $slug = Str::slug($title);
-        $count = self::where('slug', $slug)->count();
-        if ($count > 0) {
-            $slug = $slug . '-' . $count;
+        $originalSlug = $slug;
+        $count = 0;
+        
+        // Keep trying until we find a unique slug
+        while (self::where('slug', $slug)->exists()) {
+            $count++;
+            $slug = $originalSlug . '-' . $count;
         }
+        
         return $slug;
     }
 

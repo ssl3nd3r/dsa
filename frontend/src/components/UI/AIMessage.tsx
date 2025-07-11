@@ -8,7 +8,7 @@ import { RouteLink } from './RouteLink'
 import { useAuth } from '@/lib/hooks/useAuth'
 import LinkIcon from './Assets/LinkIcon'
 
-export default function AIMessage({ message }: { message: Message }) {
+export default function AIMessage({ message, setIsOpen }: { message: Message, setIsOpen: (isOpen: boolean) => void }) {
   const randomMessage = React.useMemo(() => {
     return message.properties && message.properties.length > 0
       ? AI_MESSAGES_SUCCESS[Math.floor(Math.random() * AI_MESSAGES_SUCCESS.length)]
@@ -32,7 +32,9 @@ export default function AIMessage({ message }: { message: Message }) {
             <div className='mt-4'>
               <div className='grid grid-cols-1 gap-2'>
                 {message.properties.map((property) => (
-                  <RouteLink key={property.slug+'-'+property.id} href={`/properties/${property.slug}`}> <LinkIcon size={12} className='inline' /> <span>{property.title}</span></RouteLink>
+                  <RouteLink key={property.slug+'-'+property.id} href={`/properties/${property.slug}`} onClick={() => {
+                    setIsOpen(false);
+                  }}> <LinkIcon size={12} className='inline' /> <span>{property.title}</span></RouteLink>
                 ))}
               </div>
             </div>

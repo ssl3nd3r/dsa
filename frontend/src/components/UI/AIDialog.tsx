@@ -86,7 +86,7 @@ export default function AIDialog({ isOpen, threadId, setIsOpen, setThreadId }: A
           <div ref={messagesContainer} className='flex-1 px-2.5 py-4 overflow-y-auto messages-container bg-white'>
             <div className='flex flex-col gap-4 '>
               {messages.map((message, index) => (
-                <AIMessage key={index} message={message} />
+                <AIMessage key={index} message={message} setIsOpen={setIsOpen}/>
               ))}
             </div>
           </div>

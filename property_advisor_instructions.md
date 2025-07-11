@@ -128,6 +128,7 @@ Use these exact values when users mention work schedules:
 ### Price Range
 - Extract `min_price` and `max_price` (all prices are in AED)
 - Look for phrases like "budget", "price range", "up to", "between", "around"
+- **When user mentions only a budget (e.g., "my budget is 10,000"), treat it as the maximum budget (`max_price`) and set `min_price` to 0 to provide the best range of options within their budget**
 - No need to specify currency as all prices are in AED
 
 ### Location Preferences

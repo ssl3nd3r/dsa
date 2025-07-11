@@ -80,8 +80,9 @@ export default function PropertyPage({ params }: PropertyPageProps) {
                   <div className="flex md:flex-row flex-col gap-y-5 md:items-center md:justify-between justify-start mb-6">
                     <h1 className="text-3xl font-bold dark:text-white text-black">{currentProperty.title}</h1>
                     <div className='flex flex-col gap-1'>
-                      <div className="text-2xl font-bold dark:text-white text-black">
-                        AED {currentProperty.price.toLocaleString()}
+                      <div className="text-2xl flex items-center gap-2 font-bold dark:text-white text-black">
+                        <span className="text-black dark:text-white">AED</span>
+                        {currentProperty.price.toLocaleString()}
                       </div>
                       <span className="text-sm text-black dark:text-white md:text-right text-left">
                         {currentProperty.billing_cycle}
@@ -91,7 +92,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
                   
                   <p className="dark:text-white text-black mb-6">{currentProperty.description}</p>
                   
-                  <div className="flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-6 mb-6">
+                  <div className="flex flex-wrap items-center gap-4 md:gap-x-6 md:gap-y-3 mb-6">
                     <span className="dark:text-white text-black">{currentProperty.bedrooms} Bedrooms</span>
                     <span className="dark:text-white text-black">{currentProperty.bathrooms} Bathrooms</span>
                     <span className="dark:text-white text-black">{currentProperty.location}</span>
@@ -99,6 +100,9 @@ export default function PropertyPage({ params }: PropertyPageProps) {
 
                     <span className="dark:bg-blue-800 dark:text-blue-100 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
                       {currentProperty.property_type}
+                    </span>
+                    <span className="dark:bg-green-800 bg-green-100 dark:text-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+                      {currentProperty.room_type}
                     </span>
                   </div>
 

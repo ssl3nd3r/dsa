@@ -32,12 +32,29 @@ class PropertySeeder extends Seeder
      */
     private function createStudioProperties($users): void
     {
-        Property::factory(15)
-            ->studio()
-            ->available()
-            ->create([
-                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
-            ]);
+        $locations = [
+            'Dubai Marina', 'Downtown Dubai (Downtown, DT)', 'Palm Jumeirah (Palm)', 'JBR (Jumeirah Beach Residence)', 'Business Bay', 'Dubai Hills Estate (Hills)', 'Arabian Ranches (Ranches)', 'Emirates Hills', 'Meadows', 'Springs', 'Lakes', 'JLT (Jumeirah Lake Towers)', 'DIFC (Financial Centre)', 'Sheikh Zayed Road (SZR)', 'Al Barsha (Barsha)', 'Mirdif', 'Deira (Old Dubai)', 'Bur Dubai (Old Dubai)', 'Al Quoz', 'Al Safa', 'Umm Suqeim (Jumeirah/Umm Suqeim)', 'Al Warqa', 'International City (IC)', 'Dubai Silicon Oasis (DSO)', 'Al Furjan', 'Jumeirah Village Circle (JVC)', 'Jumeirah Village Triangle (JVT)', 'Dubai Sports City (DSC)', 'Dubai Production City (IMPZ)', 'Al Nahda', 'Discovery Gardens', 'Al Khawaneej', 'Nad Al Sheba (NAS)', 'Jumeirah Golf Estates (JGE)', 'Motor City', 'Dubai Land (Dubailand)', 'Town Square (NSHAMA)', 'Majan', 'Al Mizhar', 'Al Rashidiya (Rashidiya)', 'The Greens', 'The Views', 'Satwa (Al Satwa)', 'Al Wasl', 'Zabeel (Zabeel 1 & 2)', 'Barsha Heights (Tecom)', 'Dubai Investment Park (DIP)', 'Dubai Creek Harbour (Creek)', 'Al Jaddaf', 'Dubai Festival City (DFC)'
+        ];
+
+        for ($i = 0; $i < 15; $i++) {
+            $location = fake()->randomElement($locations);
+            $roomType = 'Entire Place';
+            $propertyType = 'Studio';
+            $title = "{$roomType} - {$propertyType} in {$location}";
+            $slug = Property::createUniqueSlug($title);
+            
+            Property::factory()
+                ->studio()
+                ->available()
+                ->create([
+                    'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
+                    'location' => $location,
+                    'room_type' => $roomType,
+                    'property_type' => $propertyType,
+                    'title' => $title,
+                    'slug' => $slug,
+                ]);
+        }
     }
 
     /**
@@ -45,35 +62,75 @@ class PropertySeeder extends Seeder
      */
     private function createFamilyProperties($users): void
     {
+        $locations = [
+            'Dubai Marina', 'Downtown Dubai (Downtown, DT)', 'Palm Jumeirah (Palm)', 'JBR (Jumeirah Beach Residence)', 'Business Bay', 'Dubai Hills Estate (Hills)', 'Arabian Ranches (Ranches)', 'Emirates Hills', 'Meadows', 'Springs', 'Lakes', 'JLT (Jumeirah Lake Towers)', 'DIFC (Financial Centre)', 'Sheikh Zayed Road (SZR)', 'Al Barsha (Barsha)', 'Mirdif', 'Deira (Old Dubai)', 'Bur Dubai (Old Dubai)', 'Al Quoz', 'Al Safa', 'Umm Suqeim (Jumeirah/Umm Suqeim)', 'Al Warqa', 'International City (IC)', 'Dubai Silicon Oasis (DSO)', 'Al Furjan', 'Jumeirah Village Circle (JVC)', 'Jumeirah Village Triangle (JVT)', 'Dubai Sports City (DSC)', 'Dubai Production City (IMPZ)', 'Al Nahda', 'Discovery Gardens', 'Al Khawaneej', 'Nad Al Sheba (NAS)', 'Jumeirah Golf Estates (JGE)', 'Motor City', 'Dubai Land (Dubailand)', 'Town Square (NSHAMA)', 'Majan', 'Al Mizhar', 'Al Rashidiya (Rashidiya)', 'The Greens', 'The Views', 'Satwa (Al Satwa)', 'Al Wasl', 'Zabeel (Zabeel 1 & 2)', 'Barsha Heights (Tecom)', 'Dubai Investment Park (DIP)', 'Dubai Creek Harbour (Creek)', 'Al Jaddaf', 'Dubai Festival City (DFC)'
+        ];
+
         // 2BR properties
-        Property::factory(20)
-            ->available()
-            ->create([
-                'property_type' => '2BR',
-                'bedrooms' => 2,
-                'bathrooms' => 2,
-                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
-            ]);
+        for ($i = 0; $i < 20; $i++) {
+            $location = fake()->randomElement($locations);
+            $roomType = 'Entire Place';
+            $propertyType = '2BR';
+            $title = "{$roomType} - {$propertyType} in {$location}";
+            $slug = Property::createUniqueSlug($title);
+            
+            Property::factory()
+                ->available()
+                ->create([
+                    'property_type' => $propertyType,
+                    'bedrooms' => 2,
+                    'bathrooms' => 2,
+                    'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
+                    'location' => $location,
+                    'room_type' => $roomType,
+                    'title' => $title,
+                    'slug' => $slug,
+                ]);
+        }
 
         // 3BR properties
-        Property::factory(15)
-            ->available()
-            ->create([
-                'property_type' => '3BR',
-                'bedrooms' => 3,
-                'bathrooms' => 3,
-                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
-            ]);
+        for ($i = 0; $i < 15; $i++) {
+            $location = fake()->randomElement($locations);
+            $roomType = 'Entire Place';
+            $propertyType = '3BR';
+            $title = "{$roomType} - {$propertyType} in {$location}";
+            $slug = Property::createUniqueSlug($title);
+            
+            Property::factory()
+                ->available()
+                ->create([
+                    'property_type' => $propertyType,
+                    'bedrooms' => 3,
+                    'bathrooms' => 3,
+                    'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
+                    'location' => $location,
+                    'room_type' => $roomType,
+                    'title' => $title,
+                    'slug' => $slug,
+                ]);
+        }
 
         // 4BR+ properties
-        Property::factory(10)
-            ->available()
-            ->create([
-                'property_type' => '4BR+',
-                'bedrooms' => 4,
-                'bathrooms' => 4,
-                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
-            ]);
+        for ($i = 0; $i < 10; $i++) {
+            $location = fake()->randomElement($locations);
+            $roomType = 'Entire Place';
+            $propertyType = '4BR+';
+            $title = "{$roomType} - {$propertyType} in {$location}";
+            $slug = Property::createUniqueSlug($title);
+            
+            Property::factory()
+                ->available()
+                ->create([
+                    'property_type' => $propertyType,
+                    'bedrooms' => 4,
+                    'bathrooms' => 4,
+                    'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
+                    'location' => $location,
+                    'room_type' => $roomType,
+                    'title' => $title,
+                    'slug' => $slug,
+                ]);
+        }
     }
 
     /**
@@ -81,12 +138,29 @@ class PropertySeeder extends Seeder
      */
     private function createLuxuryProperties($users): void
     {
-        Property::factory(8)
-            ->luxury()
-            ->available()
-            ->create([
-                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
-            ]);
+        $locations = [
+            'Dubai Marina', 'Downtown Dubai (Downtown, DT)', 'Palm Jumeirah (Palm)', 'JBR (Jumeirah Beach Residence)', 'Business Bay', 'Dubai Hills Estate (Hills)', 'Arabian Ranches (Ranches)', 'Emirates Hills', 'Meadows', 'Springs', 'Lakes', 'JLT (Jumeirah Lake Towers)', 'DIFC (Financial Centre)', 'Sheikh Zayed Road (SZR)', 'Al Barsha (Barsha)', 'Mirdif', 'Deira (Old Dubai)', 'Bur Dubai (Old Dubai)', 'Al Quoz', 'Al Safa', 'Umm Suqeim (Jumeirah/Umm Suqeim)', 'Al Warqa', 'International City (IC)', 'Dubai Silicon Oasis (DSO)', 'Al Furjan', 'Jumeirah Village Circle (JVC)', 'Jumeirah Village Triangle (JVT)', 'Dubai Sports City (DSC)', 'Dubai Production City (IMPZ)', 'Al Nahda', 'Discovery Gardens', 'Al Khawaneej', 'Nad Al Sheba (NAS)', 'Jumeirah Golf Estates (JGE)', 'Motor City', 'Dubai Land (Dubailand)', 'Town Square (NSHAMA)', 'Majan', 'Al Mizhar', 'Al Rashidiya (Rashidiya)', 'The Greens', 'The Views', 'Satwa (Al Satwa)', 'Al Wasl', 'Zabeel (Zabeel 1 & 2)', 'Barsha Heights (Tecom)', 'Dubai Investment Park (DIP)', 'Dubai Creek Harbour (Creek)', 'Al Jaddaf', 'Dubai Festival City (DFC)'
+        ];
+
+        for ($i = 0; $i < 8; $i++) {
+            $location = fake()->randomElement($locations);
+            $roomType = 'Entire Place';
+            $propertyType = fake()->randomElement(['2BR', '3BR', '4BR+']);
+            $title = "{$roomType} - {$propertyType} in {$location}";
+            $slug = Property::createUniqueSlug($title);
+            
+            Property::factory()
+                ->luxury()
+                ->available()
+                ->create([
+                    'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
+                    'location' => $location,
+                    'room_type' => $roomType,
+                    'property_type' => $propertyType,
+                    'title' => $title,
+                    'slug' => $slug,
+                ]);
+        }
     }
 
     /**
@@ -94,27 +168,53 @@ class PropertySeeder extends Seeder
      */
     private function createSharedAccommodations($users): void
     {
+        $locations = [
+            'Dubai Marina', 'Downtown Dubai (Downtown, DT)', 'Palm Jumeirah (Palm)', 'JBR (Jumeirah Beach Residence)', 'Business Bay', 'Dubai Hills Estate (Hills)', 'Arabian Ranches (Ranches)', 'Emirates Hills', 'Meadows', 'Springs', 'Lakes', 'JLT (Jumeirah Lake Towers)', 'DIFC (Financial Centre)', 'Sheikh Zayed Road (SZR)', 'Al Barsha (Barsha)', 'Mirdif', 'Deira (Old Dubai)', 'Bur Dubai (Old Dubai)', 'Al Quoz', 'Al Safa', 'Umm Suqeim (Jumeirah/Umm Suqeim)', 'Al Warqa', 'International City (IC)', 'Dubai Silicon Oasis (DSO)', 'Al Furjan', 'Jumeirah Village Circle (JVC)', 'Jumeirah Village Triangle (JVT)', 'Dubai Sports City (DSC)', 'Dubai Production City (IMPZ)', 'Al Nahda', 'Discovery Gardens', 'Al Khawaneej', 'Nad Al Sheba (NAS)', 'Jumeirah Golf Estates (JGE)', 'Motor City', 'Dubai Land (Dubailand)', 'Town Square (NSHAMA)', 'Majan', 'Al Mizhar', 'Al Rashidiya (Rashidiya)', 'The Greens', 'The Views', 'Satwa (Al Satwa)', 'Al Wasl', 'Zabeel (Zabeel 1 & 2)', 'Barsha Heights (Tecom)', 'Dubai Investment Park (DIP)', 'Dubai Creek Harbour (Creek)', 'Al Jaddaf', 'Dubai Festival City (DFC)'
+        ];
+
         // Shared rooms
-        Property::factory(12)
-            ->available()
-            ->create([
-                'property_type' => fake()->randomElement(['1BR', '2BR', '3BR', '4BR+', 'Studio']),
-                'room_type' => 'Shared Room',
-                'bedrooms' => 1,
-                'bathrooms' => 1,
-                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
-            ]);
+        for ($i = 0; $i < 12; $i++) {
+            $location = fake()->randomElement($locations);
+            $roomType = 'Shared Room';
+            $propertyType = fake()->randomElement(['1BR', '2BR', '3BR', '4BR+', 'Studio']);
+            $title = "{$roomType} - {$propertyType} in {$location}";
+            $slug = Property::createUniqueSlug($title);
+            
+            Property::factory()
+                ->available()
+                ->create([
+                    'property_type' => $propertyType,
+                    'room_type' => $roomType,
+                    'bedrooms' => 1,
+                    'bathrooms' => 1,
+                    'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
+                    'location' => $location,
+                    'title' => $title,
+                    'slug' => $slug,
+                ]);
+        }
 
         // Private rooms
-        Property::factory(10)
-            ->available()
-            ->create([
-                'property_type' => fake()->randomElement(['1BR', '2BR', '3BR', '4BR+', 'Studio']),
-                'room_type' => 'Private Room',
-                'bedrooms' => 1,
-                'bathrooms' => 1,
-                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
-            ]);
+        for ($i = 0; $i < 10; $i++) {
+            $location = fake()->randomElement($locations);
+            $roomType = 'Private Room';
+            $propertyType = fake()->randomElement(['1BR', '2BR', '3BR', '4BR+', 'Studio']);
+            $title = "{$roomType} - {$propertyType} in {$location}";
+            $slug = Property::createUniqueSlug($title);
+            
+            Property::factory()
+                ->available()
+                ->create([
+                    'property_type' => $propertyType,
+                    'room_type' => $roomType,
+                    'bedrooms' => 1,
+                    'bathrooms' => 1,
+                    'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
+                    'location' => $location,
+                    'title' => $title,
+                    'slug' => $slug,
+                ]);
+        }
     }
 
     /**
@@ -122,15 +222,31 @@ class PropertySeeder extends Seeder
      */
     private function createBudgetProperties($users): void
     {
-        Property::factory(10)
-            ->available()
-            ->create([
-                'price' => fake()->numberBetween(2000, 5000),
-                'location' => fake()->randomElement(['Deira (Old Dubai)', 'Bur Dubai (Old Dubai)', 'Al Quoz']),
-                'amenities' => fake()->randomElements([
-                    'WiFi', 'Air Conditioning', 'Parking', 'Public Transport'
-                ], fake()->numberBetween(2, 4)),
-                'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
-            ]);
+        $locations = [
+            'Dubai Marina', 'Downtown Dubai (Downtown, DT)', 'Palm Jumeirah (Palm)', 'JBR (Jumeirah Beach Residence)', 'Business Bay', 'Dubai Hills Estate (Hills)', 'Arabian Ranches (Ranches)', 'Emirates Hills', 'Meadows', 'Springs', 'Lakes', 'JLT (Jumeirah Lake Towers)', 'DIFC (Financial Centre)', 'Sheikh Zayed Road (SZR)', 'Al Barsha (Barsha)', 'Mirdif', 'Deira (Old Dubai)', 'Bur Dubai (Old Dubai)', 'Al Quoz', 'Al Safa', 'Umm Suqeim (Jumeirah/Umm Suqeim)', 'Al Warqa', 'International City (IC)', 'Dubai Silicon Oasis (DSO)', 'Al Furjan', 'Jumeirah Village Circle (JVC)', 'Jumeirah Village Triangle (JVT)', 'Dubai Sports City (DSC)', 'Dubai Production City (IMPZ)', 'Al Nahda', 'Discovery Gardens', 'Al Khawaneej', 'Nad Al Sheba (NAS)', 'Jumeirah Golf Estates (JGE)', 'Motor City', 'Dubai Land (Dubailand)', 'Town Square (NSHAMA)', 'Majan', 'Al Mizhar', 'Al Rashidiya (Rashidiya)', 'The Greens', 'The Views', 'Satwa (Al Satwa)', 'Al Wasl', 'Zabeel (Zabeel 1 & 2)', 'Barsha Heights (Tecom)', 'Dubai Investment Park (DIP)', 'Dubai Creek Harbour (Creek)', 'Al Jaddaf', 'Dubai Festival City (DFC)'
+        ];
+
+        for ($i = 0; $i < 10; $i++) {
+            $location = fake()->randomElement($locations);
+            $roomType = 'Entire Place';
+            $propertyType = fake()->randomElement(['Studio', '1BR', '2BR']);
+            $title = "{$roomType} - {$propertyType} in {$location}";
+            $slug = Property::createUniqueSlug($title);
+            
+            Property::factory()
+                ->available()
+                ->create([
+                    'price' => fake()->numberBetween(2000, 5000),
+                    'location' => $location,
+                    'amenities' => fake()->randomElements([
+                        'WiFi', 'Air Conditioning', 'Parking', 'Public Transport'
+                    ], fake()->numberBetween(2, 4)),
+                    'owner_id' => $users->where('email', 'vendor@dsa.ae')->first()->id,
+                    'room_type' => $roomType,
+                    'property_type' => $propertyType,
+                    'title' => $title,
+                    'slug' => $slug,
+                ]);
+        }
     }
 } 
