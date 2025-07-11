@@ -81,11 +81,14 @@ class PropertyFactory extends Factory
             'LGBTQ+ friendly', 'Vegetarian', 'Muslim-friendly', 'International students welcome'
         ], $this->faker->numberBetween(0, 4));
 
+        $location = $this->faker->randomElement($locations);
+        $title = "{$roomType} - {$propertyType} in {$location}";
+        
         return [
-            'title' => $this->faker->sentence(3, 6),
-            'slug' => Str::slug($this->faker->sentence(3, 6)),
+            'title' => $title,
+            'slug' => Property::createUniqueSlug($title),
             'description' => $this->faker->paragraphs(3, true),
-            'location' => $this->faker->randomElement($locations),
+            'location' => $location,
             'address' => [
                 'street' => $this->faker->streetAddress(),
                 'city' => 'Dubai',
