@@ -11,6 +11,9 @@ export function mapFilters(filters: any): PropertyFilters {
   if (filters.property_type) {
     res.property_type = {value: filters.property_type, label: filters.property_type};
   }
+  if (filters.room_type) {
+    res.room_type = {value: filters.room_type, label: filters.room_type};
+  }
   if (filters.location) {
     const locations = filters.location.split(',');  
     res.location = locations.map((location: any) => ({value: location, label: location}));

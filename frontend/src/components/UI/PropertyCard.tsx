@@ -1,6 +1,6 @@
 import { Property } from '@/lib/slices/propertySlice'
 import ArrowEnter from './Assets/ArrowEnter'
-import Link from 'next/link'
+import { RouteLink } from '@/components/UI/RouteLink'
 import React from 'react'
 
 interface PropertyCardProps {
@@ -19,6 +19,7 @@ export default function PropertyCard({property, showDescription = true, showAvai
             {property.is_available ? 'Active' : 'Pending Approval'}
           </span>
         )}
+        <span className='absolute bottom-2 left-2 text-xs px-3 py-1 bg-blue-800 text-blue-100 rounded-full'>Published {new Date(property.created_at ?? '').toLocaleDateString('en-GB')}</span>
       </div>
       <div className="px-4 pt-4 flex flex-col justify-between">
         <div className='flex items-center justify-between w-full gap-2'>
@@ -92,9 +93,9 @@ export default function PropertyCard({property, showDescription = true, showAvai
           Available from: {property.available_from ? new Date(property.available_from).toLocaleDateString() : 'N/A'}
         </div>
         {property.is_available && (
-          <Link href={`/properties/${property.slug}`} className="quick-link flex items-center gap-2">
+          <RouteLink href={`/properties/${property.slug}`} className="flex items-center p-2.5 border border-black dark:border-white rounded-full gap-2">
             <ArrowEnter />
-          </Link>
+          </RouteLink>
         )}
       </div>
     </div>

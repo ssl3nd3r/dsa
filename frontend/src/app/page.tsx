@@ -25,7 +25,7 @@ export default function HomePage() {
         <PropertyTypeCard label='2 Bedroom' type='2BR' />
         <PropertyTypeCard label='3 Bedroom' type='3BR' />
         <PropertyTypeCard label='4+ Bedroom' type='4BR+' />
-        <PropertyTypeCard label='Private Room' type='Private Room' />
+        <PropertyTypeCard label='Private Room' type='Private Room' propertyOrRoomType='room' />
       </div>
     </div>
     </ProtectedRoute>

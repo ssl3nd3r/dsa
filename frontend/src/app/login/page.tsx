@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/lib/store';
 import { loginUser, clearError, removeOtpState } from '@/lib/slices/authSlice';
 import { useGuestAuth } from '@/lib/hooks/useAuth';
-import Link from 'next/link';
+import { RouteLink } from '@/components/UI/RouteLink';
 import { useRouter } from 'next/navigation';
 import TextInput from '@/components/UI/Inputs/TextInput';
 import {errorToast} from '@/components/UI/Toast';
@@ -62,9 +62,9 @@ export default function LoginPage() {
           </h2>
           <p className="mt-2 text-center text-sm text-black dark:text-white">
             Or{' '}
-            <Link href="/register" className="font-medium text-black dark:text-white hover:text-blue-500">
+            <RouteLink href="/register" className="font-medium text-black dark:text-white hover:text-blue-700">
               create a new account
-            </Link>
+            </RouteLink>
           </p>
         </div>
         
@@ -112,9 +112,9 @@ export default function LoginPage() {
 
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              <Link href="/forgot-password" className="font-medium text-black dark:text-white hover:text-blue-500">
+              <RouteLink href="/forgot-password" className="font-medium text-black dark:text-white hover:text-blue-700">
                 Forgot your password?
-              </Link>
+              </RouteLink>
             </div>
           </div>
         </form>

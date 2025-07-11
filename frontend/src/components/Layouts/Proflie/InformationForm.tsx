@@ -25,10 +25,11 @@ export default function InformationForm() {
       name: user?.name ?? '',
       email: user?.email ?? '',
       phone: user?.phone ?? '',
-      lifestyle: user?.lifestyle ? (Array.isArray(user.lifestyle) ? user.lifestyle : [user.lifestyle]) : [],
+      lifestyle: user?.lifestyle ? (Array.isArray(JSON.parse(user.lifestyle as string)) ? JSON.parse(user.lifestyle as string) : [user.lifestyle]) : [],
       work_schedule: user?.work_schedule ?? '',
     },
   });
+
 
   const watchedValues = watch();
 

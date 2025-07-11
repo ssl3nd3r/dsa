@@ -74,9 +74,13 @@ export interface Property {
 
 export interface PropertyFilters {
   property_type?: string;
+  room_type?: string;
   min_price?: number | undefined;
   max_price?: number | undefined;
   location?: Array<{value: string, label: string}>;
+  address?: string;
+  description?: string;
+  billing_cycle?: string | {value: string, label: string};
   bedrooms?: number;
   bathrooms?: number;
   furnished?: boolean;
@@ -87,6 +91,7 @@ export interface PropertyFilters {
   cultural_preferences?: Array<{value: string, label: string}>;
   sort_by?: string;
   sort_order?: 'desc' | 'asc';
+  amenities?: Array<{value: string, label: string}>;
 }
 
 export interface PropertyState {
@@ -111,7 +116,7 @@ export interface PropertyState {
 const initialState: PropertyState = {
   properties: [],
   currentProperty: null,
-  loading: true,
+  loading: false,
   error: null,
   filters: {},
   totalCount: 0,
@@ -359,6 +364,9 @@ const propertySlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
     setFilters: (state, action: PayloadAction<PropertyFilters>) => {
       state.filters = action.payload;
       state.currentPage = 1;
@@ -519,5 +527,5 @@ const propertySlice = createSlice({
   },
 });
 
-export const { clearError, setFilters, clearFilters, setCurrentProperty, clearProperties } = propertySlice.actions;
+export const { clearError, setFilters, clearFilters, setCurrentProperty, clearProperties, setLoading } = propertySlice.actions;
 export default propertySlice.reducer; 

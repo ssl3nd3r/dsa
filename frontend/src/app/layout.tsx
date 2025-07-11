@@ -16,8 +16,8 @@ const kantumruy = Kantumruy_Pro({
 });
 
 export const metadata: Metadata = {
-  title: "Dubai Accommodations - Find Your Perfect Home",
-  description: "Discover the perfect accommodation in Dubai. Connect with property owners and service providers for a seamless living experience.",
+  title: "DSA (Dubai Smart Accommodation) - Find Your Perfect Home",
+  description: "Discover the perfect accommodation in Dubai through DSA (Dubai Smart Accommodation). Connect with property owners and service providers for a seamless living experience.",
 };
 
 export default function RootLayout({
@@ -25,7 +25,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -33,9 +32,9 @@ export default function RootLayout({
       >
         <ReduxProvider>
           <Toast />
-            <Layout>
-              {children}
-            </Layout>
+          <Layout>
+            {children}
+          </Layout>
         </ReduxProvider>
       </body>
     </html>

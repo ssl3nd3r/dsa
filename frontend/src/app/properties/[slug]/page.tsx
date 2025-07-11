@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/lib/store';
 import { fetchPropertyBySlug, addToInterests, removeFromInterests } from '@/lib/slices/propertySlice';
-import Loading from '@/app/loading';
 import GalleryIcon from '@/components/UI/Assets/GalleryIcon';
 import PropertyImagesGallery from '@/components/UI/PropertyImagesGallery';
 import Button from '@/components/UI/Button';
@@ -12,6 +11,7 @@ import {ProtectedRoute} from '@/components/ProtectedRoute';
 import { useAuth } from '@/lib/hooks/useAuth';
 import BookMark from '@/components/UI/Assets/BookMark';
 import BookMarkFilled from '@/components/UI/Assets/BookMarkFilled';
+import { RouteLink } from '@/components/UI/RouteLink';
   
 interface PropertyPageProps {
   params: Promise<{
@@ -22,7 +22,7 @@ interface PropertyPageProps {
 export default function PropertyPage({ params }: PropertyPageProps) {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useAuth();
-  const { currentProperty, loading } = useSelector((state: RootState) => state.property);
+  const { currentProperty } = useSelector((state: RootState) => state.property);
   const [galleryOpen, setGalleryOpen] = useState(false);
   // Unwrap the params Promise
   const { slug } = React.use(params);
@@ -33,17 +33,12 @@ export default function PropertyPage({ params }: PropertyPageProps) {
     }
   }, [dispatch, slug]);
 
-  useEffect(() => {
-    console.log(currentProperty);
-  }, [currentProperty]);
-
-  if (loading) {
-    return <Loading/>;
-  }
-
   if (!currentProperty) {
     return (
       <ProtectedRoute>
+        <div className='hidden'>
+          <RouteLink href='/'/>            
+        </div>
         <div className="flex-1 py-10">
           <div className=" absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center h-full">
             <h1 className="text-2xl font-bold">Property not found</h1>
@@ -56,7 +51,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
 
   return (
     <ProtectedRoute>  
-      <div className="flex-1 py-10 px-4">
+        <div className="flex-1 py-10 px-4">
           <div className="max-w-[1200px] mx-auto">
             {/* Property Images */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
@@ -113,6 +108,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
                       {currentProperty.address.street}, {currentProperty.location}, {currentProperty.address.city}
                     </p>
                   </div>
+                  <div className='mt-6 w-fit text-xs px-3 py-1 bg-blue-800 text-blue-100 rounded-full'>Published {new Date(currentProperty.created_at ?? '').toLocaleDateString('en-GB')}</div>
                 </div>
 
                 {/* Amenities */}
@@ -168,7 +164,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
 
               {/* Sidebar */}
               <div className="lg:col-span-1">
-                <div className="bg-white dark:bg-black rounded-2xl shadow-lg p-8 sticky top-8">
+                <div className="bg-white dark:bg-black rounded-2xl shadow-lg p-8 sticky top-24">
                   <div className='flex items-center justify-between'>
                     <h3 className="text-xl font-semibold mb-6">Contact Owner</h3>
                       {currentProperty.owner?.id !== user?.id && 

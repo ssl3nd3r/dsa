@@ -1,6 +1,6 @@
-# Dubai Smart Accommodations Platform
+# DSA (Dubai Smart Accommodation) Platform
 
-An AI-powered platform for shared accommodations in Dubai, consisting of both an Android mobile application and a web platform.
+An AI-powered platform for shared accommodations in Dubai, specifically designed for DSA (Dubai Smart Accommodation). This comprehensive solution consists of both an Android mobile application and a web platform to facilitate smart accommodation matching and management.
 
 ## 🚀 Project Status
 
@@ -41,7 +41,7 @@ An AI-powered platform for shared accommodations in Dubai, consisting of both an
 ## 🏗️ Project Structure
 
 ```
-dubai-smart-accommodations/
+dsa-dubai-smart-accommodation/
 ├── backend/                 # Backend server (Node.js/Express)
 │   ├── src/
 │   │   ├── models/         # MongoDB schemas
@@ -125,7 +125,7 @@ dubai-smart-accommodations/
    Edit `.env` with your configuration:
    ```env
    PORT=5000
-   MONGO_URI=mongodb://localhost:27017/dubai-accommodations
+   MONGO_URI=mongodb://localhost:27017/dsa-dubai-smart-accommodation
    JWT_SECRET=your-super-secret-jwt-key
    FRONTEND_URL=http://localhost:3000
    ```

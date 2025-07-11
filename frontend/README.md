@@ -1,6 +1,6 @@
-# Dubai Accommodations Frontend
+# DSA (Dubai Smart Accommodation) Frontend
 
-A modern Next.js frontend application with Redux Toolkit for managing Dubai accommodations, built with TypeScript and Tailwind CSS.
+A modern Next.js frontend application with Redux Toolkit for managing DSA (Dubai Smart Accommodation), built with TypeScript and Tailwind CSS.
 
 ## Features
 
@@ -113,7 +113,7 @@ The application uses Redux Toolkit with the following slices:
 
 ## API Integration
 
-The frontend is designed to work with the Dubai Accommodations backend API:
+The frontend is designed to work with the DSA (Dubai Smart Accommodation) backend API:
 
 - **Base URL**: `http://localhost:5000/api`
 - **Authentication**: JWT-based with Bearer tokens
@@ -172,4 +172,4 @@ Real-time features include:
 
 ## License
 
-This project is part of the Dubai Accommodations application.
+This project is part of the DSA (Dubai Smart Accommodation) application.

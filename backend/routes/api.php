@@ -39,7 +39,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/properties', [PropertyController::class, 'store']);
     Route::put('/properties/{slug}', [PropertyController::class, 'update']);
     Route::delete('/properties/{slug}', [PropertyController::class, 'destroy']);
+    Route::post('/properties/chat', [PropertyController::class, 'chatAI']);
     
+
     // Message routes
     Route::post('/messages', [MessageController::class, 'store']);
     Route::get('/messages/conversations', [MessageController::class, 'conversations']);

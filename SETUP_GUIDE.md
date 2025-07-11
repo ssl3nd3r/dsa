@@ -93,7 +93,7 @@ npm run dev
 ### Backend Environment Variables (.env)
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/dubai-accommodations
+MONGO_URI=mongodb://localhost:27017/dsa-dubai-smart-accommodation
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 FRONTEND_URL=http://localhost:3000
 NODE_ENV=development

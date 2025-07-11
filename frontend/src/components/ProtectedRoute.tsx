@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import { useAuth } from '../lib/hooks/useAuth';
-import Loading from '../app/loading';
+import { RouteLink } from './UI/RouteLink';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -25,16 +25,26 @@ export const ProtectedRoute = ({
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <Loading />
+      <></>
     );
   }
 
   // If authentication is not required or user is authenticated, render children
   if (!requireAuth || isAuthenticated) {
-    return <>{children}</>
+    return (
+      <>
+        <RouteLink href='#' className='hidden'/>            
+        {children}
+      </>
+    )
   }
 
   // If authentication is required but user is not authenticated, show fallback or nothing
-  return <>{fallback}</>;
+  return (
+    <>
+      <RouteLink href='#' className='hidden'/>            
+      {fallback}
+    </>
+  );
 };
 

@@ -18,6 +18,7 @@ export interface UIState {
     messageForm: boolean;
   };
   theme: 'light' | 'dark';
+  loading: boolean;
 }
 
 const initialState: UIState = {
@@ -31,6 +32,7 @@ const initialState: UIState = {
     messageForm: false,
   },
   theme: 'light',
+  loading: false,
 };
 
 const uiSlice = createSlice({
@@ -78,6 +80,9 @@ const uiSlice = createSlice({
     toggleTheme: (state) => {
       state.theme = state.theme === 'light' ? 'dark' : 'light';
     },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
   },
 });
 
@@ -94,6 +99,7 @@ export const {
   closeAllModals,
   setTheme,
   toggleTheme,
+  setLoading,
 } = uiSlice.actions;
 
 export default uiSlice.reducer; 

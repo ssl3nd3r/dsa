@@ -126,7 +126,7 @@ class PropertySeeder extends Seeder
             ->available()
             ->create([
                 'price' => fake()->numberBetween(2000, 5000),
-                'location' => fake()->randomElement(['Al Quoz', 'Al Khail', 'Other']),
+                'location' => fake()->randomElement(['Deira (Old Dubai)', 'Bur Dubai (Old Dubai)', 'Al Quoz']),
                 'amenities' => fake()->randomElements([
                     'WiFi', 'Air Conditioning', 'Parking', 'Public Transport'
                 ], fake()->numberBetween(2, 4)),

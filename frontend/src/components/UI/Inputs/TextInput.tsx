@@ -15,10 +15,12 @@ interface TextInputProps {
   onBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   placeholder: string;
   className?: string;
+  inputClassName?: string;
   showLabel?: boolean;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   }
 
-export default function TextInput({ label, name, type, autoComplete, required = false, hidden = false, min = 0, max = 999999999999999999, disabled = false, value, onChange, onBlur, placeholder, className = '', showLabel = false }: TextInputProps) {
+export default function TextInput({ label, name, type, autoComplete, required = false, hidden = false, min = 0, max = 999999999999999999, disabled = false, value, onChange, onBlur, placeholder, className = '', inputClassName = '', showLabel = false, onKeyDown }: TextInputProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     onChange(e);
@@ -85,10 +87,11 @@ export default function TextInput({ label, name, type, autoComplete, required = 
         value={value}
         onChange={handleChange}
         onBlur={handleBlur}
-        className="appearance-none rounded-md relative block w-full px-3 py-2 outline-none border dark:border-white border-black dark:bg-black bg-white dark:placeholder-gray-200 placeholder-gray-800 text-black dark:text-white focus:outline-none text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+        className={`appearance-none rounded-md relative block w-full px-3 py-2 outline-none border dark:border-white border-black dark:bg-black bg-white dark:placeholder-gray-200 placeholder-gray-800 text-black dark:text-white focus:outline-none text-sm disabled:opacity-50 disabled:cursor-not-allowed ${inputClassName}`}
         placeholder={placeholder}
         min={min}
         max={max}
+        onKeyDown={onKeyDown}
       />
     </div>
   )

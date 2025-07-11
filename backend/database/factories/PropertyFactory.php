@@ -20,11 +20,15 @@ class PropertyFactory extends Factory
     public function definition(): array
     {
         $locations = [
-            'Dubai Marina', 'Downtown Dubai', 'Palm Jumeirah', 'JBR', 'Business Bay',
-            'Dubai Hills Estate', 'Arabian Ranches', 'Emirates Hills', 'Meadows',
-            'Springs', 'Lakes', 'JLT', 'DIFC', 'Sheikh Zayed Road', 'Al Barsha',
-            'Jumeirah', 'Umm Suqeim', 'Al Sufouh', 'Al Quoz', 'Al Khail'
+            'Dubai Marina', 'Downtown Dubai (Downtown, DT)', 'Palm Jumeirah (Palm)', 'JBR (Jumeirah Beach Residence)', 'Business Bay', 'Dubai Hills Estate (Hills)', 'Arabian Ranches (Ranches)', 'Emirates Hills', 'Meadows', 'Springs', 'Lakes', 'JLT (Jumeirah Lake Towers)', 'DIFC (Financial Centre)', 'Sheikh Zayed Road (SZR)', 'Al Barsha (Barsha)', 'Mirdif', 'Deira (Old Dubai)', 'Bur Dubai (Old Dubai)', 'Al Quoz', 'Al Safa', 'Umm Suqeim (Jumeirah/Umm Suqeim)', 'Al Warqa', 'International City (IC)', 'Dubai Silicon Oasis (DSO)', 'Al Furjan', 'Jumeirah Village Circle (JVC)', 'Jumeirah Village Triangle (JVT)', 'Dubai Sports City (DSC)', 'Dubai Production City (IMPZ)', 'Al Nahda', 'Discovery Gardens', 'Al Khawaneej', 'Nad Al Sheba (NAS)', 'Jumeirah Golf Estates (JGE)', 'Motor City', 'Dubai Land (Dubailand)', 'Town Square (NSHAMA)', 'Majan', 'Al Mizhar', 'Al Rashidiya (Rashidiya)', 'The Greens', 'The Views', 'Satwa (Al Satwa)', 'Al Wasl', 'Zabeel (Zabeel 1 & 2)', 'Barsha Heights (Tecom)', 'Dubai Investment Park (DIP)', 'Dubai Creek Harbour (Creek)', 'Al Jaddaf', 'Dubai Festival City (DFC)'
         ];
+
+        // $locations = [
+        //     'Dubai Marina', 'Downtown Dubai', 'Palm Jumeirah', 'JBR', 'Business Bay',
+        //     'Dubai Hills Estate', 'Arabian Ranches', 'Emirates Hills', 'Meadows',
+        //     'Springs', 'Lakes', 'JLT', 'DIFC', 'Sheikh Zayed Road', 'Al Barsha',
+        //     'Jumeirah', 'Umm Suqeim', 'Al Sufouh', 'Al Quoz', 'Al Khail'
+        // ];
 
         $propertyTypes = ['Studio', '1BR', '2BR', '3BR', '4BR+'];
         $roomTypes = ['Entire Place', 'Private Room', 'Shared Room'];
@@ -159,7 +163,7 @@ class PropertyFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'price' => $this->faker->numberBetween(15000, 50000),
-            'location' => $this->faker->randomElement(['Palm Jumeirah', 'Downtown Dubai', 'Dubai Marina']),
+            'location' => $this->faker->randomElement(['Palm Jumeirah (Palm)', 'Downtown Dubai (Downtown, DT)', 'Dubai Marina']),
             'amenities' => $this->faker->randomElements([
                 'WiFi', 'Air Conditioning', 'Gym', 'Pool', 'Parking', 'Balcony',
                 'Dishwasher', 'Washing Machine', 'Furnished', 'Security', 'Concierge',

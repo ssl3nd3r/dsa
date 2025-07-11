@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AppDispatch, RootState } from '@/lib/store';
@@ -11,7 +11,7 @@ import OtpInput from '@/components/UI/Inputs/OtpInput';
 import { errorToast } from '@/components/UI/Toast';
 import Button from '@/components/UI/Button';
 
-export default function VerifyLoginPage() {
+function VerifyLoginContent() {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, otpEmail } = useSelector((state: RootState) => state.auth);
   const searchParams = useSearchParams();
@@ -68,7 +68,7 @@ export default function VerifyLoginPage() {
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="rounded-md -space-y-px">
             <TextInput
               label="Email address"
               placeholder="Email address"
@@ -109,7 +109,7 @@ export default function VerifyLoginPage() {
 
           <div className="flex items-center justify-between">
             <div className="text-sm">
-              <button type="button" onClick={handleBackToLogin} className="cursor-pointer font-medium dark:text-white text-black hover:text-blue-500">
+              <button type="button" onClick={handleBackToLogin} className="cursor-pointer font-medium dark:text-white text-black hover:text-blue-700">
                 Back to login
               </button>
             </div>
@@ -117,5 +117,22 @@ export default function VerifyLoginPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function VerifyLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          </div>
+        </div>
+      </div>
+    }>
+      <VerifyLoginContent />
+    </Suspense>
   );
 } 

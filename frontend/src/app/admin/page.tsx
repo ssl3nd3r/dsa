@@ -1,6 +1,6 @@
 'use client';
 
-import Loading from '@/app/loading'
+import Loading from '@/components/Layouts/loading'
 import {ProtectedRoute} from '@/components/ProtectedRoute';
 import { API_URL } from '@/lib/constants';
 import { useEffect } from 'react';
@@ -14,7 +14,7 @@ export default function AdminPage() {
 
   return (
     <ProtectedRoute>
-      <Loading/>
+      <Loading loading={true} />
     </ProtectedRoute>
   )
 }

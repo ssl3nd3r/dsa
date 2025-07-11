@@ -9,7 +9,7 @@ export interface User {
   email_verified_at?: string;
   phone?: string;
   profile_image?: string;
-  lifestyle?: string[] | 'Quiet' | 'Active' | 'Smoker' | 'Non-smoker' | 'Pet-friendly' | 'No pets';
+  lifestyle?: string[] | 'Quiet' | 'Active' | 'Smoker' | 'Non-smoker' | 'Pet-friendly' | 'No pets' | string;
   personality_traits?: string[];
   work_schedule?: '9-5' | 'Night shift' | 'Remote' | 'Flexible' | 'Student';
   cultural_preferences?: string[];
@@ -275,6 +275,9 @@ const authSlice = createSlice({
       state.otpRequired = false;
       state.otpEmail = null;
     },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -491,5 +494,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { logout, clearError, setToken, clearOtpState, removeOtpState } = authSlice.actions;
+export const { logout, clearError, setToken, clearOtpState, removeOtpState, setLoading } = authSlice.actions;
 export default authSlice.reducer; 

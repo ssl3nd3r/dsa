@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import RangeSlider from './Inputs/RangeSlider'
 import Select from './Inputs/Select'
 import Button from './Button'
-import { AREAS, PROPERTY_TYPES } from '@/lib/constants'
+import { AMENITIES, AREAS, BILLING_CYCLES, PROPERTY_TYPES, ROOM_TYPES } from '@/lib/constants'
 import { useRouter } from 'next/navigation';
 import { PropertyFilters } from '@/lib/slices/propertySlice';
 
@@ -13,13 +13,16 @@ interface SearchParams {
 }
 
 export default function SearchComponent({params, onHandleSearch, maxWidth}: SearchParams) {
-  const router = useRouter();
+  const router = useRouter();  
 
   const [searchParams, setSearchParams] = useState<PropertyFilters>(params ?? {
-    min_price: 6000,
+    min_price: 1000,
     max_price: 600000,
+    billing_cycle: BILLING_CYCLES[0],
     property_type: "", 
     location: [],
+    room_type: "",
+    address: "",
   });
 
   const handleSearch = () => {
@@ -42,9 +45,33 @@ export default function SearchComponent({params, onHandleSearch, maxWidth}: Sear
       }
       params.append('property_type', propertyType.trim());
     }
+
+    if (searchParams.billing_cycle) {
+      let billingCycle: string;
+      if (typeof searchParams.billing_cycle === 'object' && searchParams.billing_cycle && 'value' in searchParams.billing_cycle) {
+        billingCycle = (searchParams.billing_cycle as {value: string}).value;
+      } else {
+        billingCycle = searchParams.billing_cycle as string;
+      }
+      params.append('billing_cycle', billingCycle.trim());
+    }
+
+    if (searchParams.room_type) {
+      let roomType: string;
+      if (typeof searchParams.room_type === 'object' && searchParams.room_type && 'value' in searchParams.room_type) {
+        roomType = (searchParams.room_type as {value: string}).value;
+      } else {
+        roomType = searchParams.room_type as string;
+      }
+      params.append('room_type', roomType.trim());
+    }
     
     if (searchParams.location && searchParams.location.length > 0) {
       params.append('location', searchParams.location.map(location => location.value).join(','));
+    }
+
+    if (searchParams.amenities && searchParams.amenities.length > 0) {
+      params.append('amenities', searchParams.amenities.map(amenity => amenity.value).join(','));
     }
     
     router.push(`/properties?${params.toString()}`);
@@ -53,11 +80,20 @@ export default function SearchComponent({params, onHandleSearch, maxWidth}: Sear
   }
 
   return (
-    <div style={{maxWidth: maxWidth ? maxWidth : 'unset'}} className={`${!maxWidth ? 'w-[85%]' : 'w-full'} mx-auto dark:bg-black bg-white border dark:border-gray-700 border-gray-300 p-4 rounded-xl flex md:flex-row flex-col items-center justify-between gap-5`}>
-      <div className='flex md:flex-wrap md:flex-row flex-col items-center gap-5'>
-        <RangeSlider width='250px' min={6000} max={600000} value={[searchParams.min_price ?? 6000, searchParams.max_price ?? 600000]} onChange={(_, value) => {setSearchParams({...searchParams, min_price: value[0], max_price: value[1]})}} name='Price AED' />
+    <div style={{maxWidth: maxWidth ? maxWidth : 'unset'}} className={`${!maxWidth ? 'sm:w-[85%]' : 'w-full'} mx-auto dark:bg-black bg-white border dark:border-gray-700 border-gray-300 p-4 rounded-xl flex sm:flex-row flex-col items-center justify-between gap-5`}>
+      <div className='flex sm:flex-wrap sm:flex-row flex-col items-center gap-5 gap-y-1'>
+        <RangeSlider width='240px' min={0} max={99999999999} value={[searchParams.min_price ?? 1000, searchParams.max_price ?? 600000]} onChange={(_, value) => {setSearchParams({...searchParams, min_price: value[0], max_price: value[1]})}} name='Price AED' />
         <Select value={searchParams.property_type} options={PROPERTY_TYPES} label='Property Type' onChange={(value) => {setSearchParams({...searchParams, property_type: value?.value || ""})}} />
+        <Select value={searchParams.room_type} options={ROOM_TYPES} label='Room Type' onChange={(value) => {setSearchParams({...searchParams, room_type: value?.value || ""})}} />
         <Select value={searchParams.location} options={AREAS} label='Locations' isMulti onChange={(value) => {setSearchParams({...searchParams, location: value})}} />
+        <Select
+          value={searchParams.billing_cycle ?? BILLING_CYCLES[0]}
+          options={BILLING_CYCLES}
+          label='Billing Cycle'
+          notClearable
+          onChange={(value) => { setSearchParams({ ...searchParams, billing_cycle: value?.value || BILLING_CYCLES[0].value }) }}
+        />
+        <Select value={searchParams.amenities} options={AMENITIES} label='Amenities' isMulti onChange={(value) => {setSearchParams({...searchParams, amenities: value})}} />
       </div>
       <div className='flex text-sm md:mt-0 mt-8 items-center gap-2'>
         <Button onClick={handleSearch}>Search</Button>

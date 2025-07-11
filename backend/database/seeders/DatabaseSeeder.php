@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'Maya',
+                'name' => 'Mayad',
                 'email' => 'mayad@dsa.ae',
             ],
             [

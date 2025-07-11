@@ -14,7 +14,6 @@ export default function RangeSlider({ max, value, onChange, name, width = "100%"
   const [rangeValue, setRangeValue] = useState<number[]>(value);
 
   useEffect(() => {
-    console.log(rangeValue);
     onChange(new Event('change'), rangeValue, 0);
   }, [rangeValue]);
   

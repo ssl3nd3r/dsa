@@ -6,10 +6,74 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Property;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Services\OpenAIService;
 
 class PropertyController extends Controller
 {
+    /**
+     * Convert search parameters to monthly equivalent
+     */
+    private function normalizeSearchPrice($price, $searchBillingCycle)
+    {
+        switch (strtolower($searchBillingCycle)) {
+            case 'monthly':
+                return (int)$price;
+            case 'quarterly':
+                return (int)($price / 3);
+            case 'yearly':
+                return (int)($price / 12);
+            default:
+                return (int)$price; // fallback to original price
+        }
+    }
+
+    /**
+     * Example of how the price comparison works:
+     * 
+     * Search: "max 100k yearly"
+     * - Normalized to monthly: 100,000 / 12 = 8,333.33 monthly
+     * 
+     * Properties in database:
+     * - Property A: 6,000 monthly (normalized: 6,000) ✓ MATCH (6,000 < 8,333.33)
+     * - Property B: 15,000 quarterly (normalized: 15,000 / 3 = 5,000) ✓ MATCH (5,000 < 8,333.33)
+     * - Property C: 120,000 yearly (normalized: 120,000 / 12 = 10,000) ✗ NO MATCH (10,000 > 8,333.33)
+     */
+
+    /**
+     * Debug method to show price comparisons (can be used for testing)
+     */
+    public function debugPriceComparison($searchPrice, $searchBillingCycle)
+    {
+        $normalizedSearch = $this->normalizeSearchPrice($searchPrice, $searchBillingCycle);
+        
+        return [
+            'search_criteria' => [
+                'original_price' => $searchPrice,
+                'billing_cycle' => $searchBillingCycle,
+                'normalized_monthly' => $normalizedSearch
+            ],
+            'examples' => [
+                'monthly_6000' => [
+                    'original' => '6,000 monthly',
+                    'normalized' => 6000,
+                    'matches' => 6000 <= $normalizedSearch
+                ],
+                'quarterly_15000' => [
+                    'original' => '15,000 quarterly',
+                    'normalized' => 15000 / 3,
+                    'matches' => (15000 / 3) <= $normalizedSearch
+                ],
+                'yearly_120000' => [
+                    'original' => '120,000 yearly',
+                    'normalized' => 120000 / 12,
+                    'matches' => (120000 / 12) <= $normalizedSearch
+                ]
+            ]
+        ];
+    }
+
     // Get all properties with filtering
     public function index(Request $request)
     {
@@ -19,6 +83,24 @@ class PropertyController extends Controller
         if ($request->has('location')) {
             $locations = is_array($request->location) ? $request->location : explode(',', $request->location);
             $query->whereIn('location', $locations);
+        }
+
+
+        // if ($request->has('with_preferences') && $request->with_preferences === 'true') {
+        //     $user = Auth::user();
+        //     $culturalPreferences = $user->cultural_preferences;
+        //     $query->whereJsonContains('cultural_preferences', $culturalPreferences);
+        // }
+
+        if ($request->has('address') && !empty($request->address)) {
+            $address = $request->address;
+            $query->where('address', 'like', '%' . $address . '%');
+        }
+
+        // Check if a string is contained in the description
+        if ($request->has('description') && !empty($request->description)) {
+            $desc = $request->description;
+            $query->where('description', 'like', '%' . $desc . '%');
         }
 
         // Filter by property type
@@ -31,12 +113,41 @@ class PropertyController extends Controller
             $query->where('room_type', $request->room_type);
         }
 
-        // Filter by price range
+        // Filter by price range with billing cycle normalization
         if ($request->has('min_price')) {
-            $query->where('price', '>=', $request->min_price);
+            $searchBillingCycle = $request->get('billing_cycle', 'monthly');
+            $normalizedMinPrice = $this->normalizeSearchPrice($request->min_price, $searchBillingCycle);
+            
+            // Convert property prices to monthly equivalent for comparison
+            $query->whereRaw('
+                CASE 
+                    WHEN LOWER(billing_cycle) = "monthly" THEN price
+                    WHEN LOWER(billing_cycle) = "quarterly" THEN price / 3
+                    WHEN LOWER(billing_cycle) = "yearly" THEN price / 12
+                    ELSE price
+                END >= ?
+            ', [$normalizedMinPrice]);
         }
+        
         if ($request->has('max_price')) {
-            $query->where('price', '<=', $request->max_price);
+            $searchBillingCycle = $request->get('billing_cycle', 'monthly');
+            $normalizedMaxPrice = $this->normalizeSearchPrice($request->max_price, $searchBillingCycle);
+            
+            // Convert property prices to monthly equivalent for comparison
+            $query->whereRaw('
+                CASE 
+                    WHEN LOWER(billing_cycle) = "monthly" THEN price
+                    WHEN LOWER(billing_cycle) = "quarterly" THEN price / 3
+                    WHEN LOWER(billing_cycle) = "yearly" THEN price / 12
+                    ELSE price
+                END <= ?
+            ', [$normalizedMaxPrice]);
+        }
+        
+        // Filter by billing cycle (only if no price filtering is happening)
+        // When price filtering is active, we want to see all billing cycles for comparison
+        if ($request->has('billing_cycle') && !$request->has('min_price') && !$request->has('max_price')) {
+            $query->where('billing_cycle', $request->billing_cycle);
         }
 
         // Filter by bedrooms
@@ -56,7 +167,6 @@ class PropertyController extends Controller
         $sortBy = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
-
         $properties = $query->paginate($request->get('per_page', 10));
 
         return response()->json([
@@ -70,12 +180,120 @@ class PropertyController extends Controller
         ]);
     }
 
+    // Get all properties with filtering
+    public function indexAI($params)
+    {
+        Log::info('indexAI params: ' . json_encode($params));
+        try {
+            $query = Property::with('owner')->where('is_available', true);
+            
+            // Filter by location
+            if (isset($params['location'])) {
+                $locations = is_array($params['location']) ? $params['location'] : explode(',', $params['location']);
+                
+                if(count($locations) > 0) $query->whereIn('location', $locations);
+            }
+    
+    
+            // if ($request->has('with_preferences') && $request->with_preferences === 'true') {
+            //     $user = Auth::user();
+            //     $culturalPreferences = $user->cultural_preferences;
+            //     $query->whereJsonContains('cultural_preferences', $culturalPreferences);
+            // }
+    
+            if (isset($params['address']) && !empty($params['address'])) {
+                $address = $params['address'];
+                $query->where('address', 'like', '%' . $address . '%');
+            }
+    
+            // Check if a string is contained in the description
+            if (isset($params['description']) && !empty($params['description'])) {
+                $desc = $params['description'];
+                $query->where('description', 'like', '%' . $desc . '%');
+            }
+    
+            // Filter by property type
+            if (isset($params['property_type']) && !empty($params['property_type'])) {
+                $query->where('property_type', $params['property_type']);
+            }
+    
+            // Filter by room type
+            if (isset($params['room_type']) && !empty($params['room_type'])) {
+                $query->where('room_type', $params['room_type']);
+            }
+    
+            // Filter by price range with billing cycle normalization
+            if (isset($params['min_price']) && !empty($params['min_price'])) {
+                $searchBillingCycle = $params['billing_cycle'] ?? 'monthly';
+                $normalizedMinPrice = $this->normalizeSearchPrice($params['min_price'], $searchBillingCycle);
+                
+                // Convert property prices to monthly equivalent for comparison
+                $query->whereRaw('
+                    CASE 
+                        WHEN LOWER(billing_cycle) = "monthly" THEN price
+                        WHEN LOWER(billing_cycle) = "quarterly" THEN price / 3
+                        WHEN LOWER(billing_cycle) = "yearly" THEN price / 12
+                        ELSE price
+                    END >= ?
+                ', [$normalizedMinPrice]);
+            }
+            
+            if (isset($params['max_price']) && !empty($params['max_price'])) {
+                $searchBillingCycle = $params['billing_cycle'] ?? 'monthly';
+                $normalizedMaxPrice = $this->normalizeSearchPrice($params['max_price'], $searchBillingCycle);
+                
+                // Convert property prices to monthly equivalent for comparison
+                $query->whereRaw('
+                    CASE 
+                        WHEN LOWER(billing_cycle) = "monthly" THEN price
+                        WHEN LOWER(billing_cycle) = "quarterly" THEN price / 3
+                        WHEN LOWER(billing_cycle) = "yearly" THEN price / 12
+                        ELSE price
+                    END <= ?
+                ', [$normalizedMaxPrice]);
+            }
+            
+            // Filter by billing cycle (only if no price filtering is happening)
+            // When price filtering is active, we want to see all billing cycles for comparison
+            if (isset($params['billing_cycle']) && !empty($params['billing_cycle']) && 
+                !isset($params['min_price']) && !isset($params['max_price'])) {
+                $query->where('billing_cycle', $params['billing_cycle']);
+            }
+    
+            // Filter by bedrooms
+            if (isset($params['bedrooms']) && !empty($params['bedrooms'])) {
+                $query->where('bedrooms', $params['bedrooms']);
+            }
+    
+            // Filter by amenities
+            if (isset($params['amenities'])) {
+                $amenities = is_array($params['amenities']) ? $params['amenities'] : explode(',', $params['amenities']);
+                if(count($amenities) > 0) {
+                    foreach ($amenities as $amenity) {
+                        $query->whereJsonContains('amenities', $amenity);
+                    }
+                }
+            }
+    
+            // Sort by
+            $sortBy = isset($params['sort_by']) ? $params['sort_by'] : 'created_at';
+            $sortOrder = isset($params['sort_order']) ? $params['sort_order'] : 'desc';
+            $query->orderBy($sortBy, $sortOrder);
+    
+            $properties = $query->limit(4)->get();
+    
+            return $properties;
+        } catch (\Throwable $th) {
+            Log::error('indexAI error: ' . $th->getMessage());
+            return [];
+        }
+    }
+
     // Get single property
     public function show($slug)
     {
         $property = Property::with('owner')->where('slug', $slug)->where('is_available', true)->first();
 
-        Log::info('Property:', Property::where('slug', $slug)->get()->toArray());
         if (!$property) {
             return response()->json(['error' => 'Property not found'], 404);
         }
@@ -352,10 +570,33 @@ class PropertyController extends Controller
             $query->where('property_type', $request->property_type);
         }
         if ($request->has('min_price')) {
-            $query->where('price', '>=', $request->min_price);
+            $searchBillingCycle = $request->get('billing_cycle', 'monthly');
+            $normalizedMinPrice = $this->normalizeSearchPrice($request->min_price, $searchBillingCycle);
+            
+            // Convert property prices to monthly equivalent for comparison
+            $query->whereRaw('
+                CASE 
+                    WHEN LOWER(billing_cycle) = "monthly" THEN price
+                    WHEN LOWER(billing_cycle) = "quarterly" THEN price / 3
+                    WHEN LOWER(billing_cycle) = "yearly" THEN price / 12
+                    ELSE price
+                END >= ?
+            ', [$normalizedMinPrice]);
         }
+        
         if ($request->has('max_price')) {
-            $query->where('price', '<=', $request->max_price);
+            $searchBillingCycle = $request->get('billing_cycle', 'monthly');
+            $normalizedMaxPrice = $this->normalizeSearchPrice($request->max_price, $searchBillingCycle);
+            
+            // Convert property prices to monthly equivalent for comparison
+            $query->whereRaw('
+                CASE 
+                    WHEN LOWER(billing_cycle) = "monthly" THEN price
+                    WHEN LOWER(billing_cycle) = "quarterly" THEN price / 3
+                    WHEN LOWER(billing_cycle) = "yearly" THEN price / 12
+                    ELSE price
+                END <= ?
+            ', [$normalizedMaxPrice]);
         }
 
         $properties = $query->orderBy('created_at', 'desc')
@@ -370,5 +611,65 @@ class PropertyController extends Controller
                 'total' => $properties->total(),
             ]
         ]);
+    }
+
+    public function chatAI(Request $request) {
+        $openAIService = new OpenAIService();
+        try {
+            $response = $openAIService->sendMessage($request->message, $request->thread_id ?? null);
+            
+            
+            $search_params = [];
+            // Check if assistant_reply contains JSON
+            if (isset($response['assistant_reply'])) {
+                $assistantReply = $response['assistant_reply'];
+                
+                // First, try to decode the entire string as JSON
+                $decodedJson = json_decode($assistantReply, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    // If it's valid JSON, merge it with the response
+                    $search_params = $decodedJson;
+                } else {
+                    // Try to extract JSON from within the text (look for JSON blocks)
+                    $jsonMatches = [];
+                    
+                    // Pattern to match JSON objects or arrays within text
+                    $patterns = [
+                        '/\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/', // JSON objects
+                        '/\[[^\[\]]*(?:\{[^{}]*\}[^\[\]]*)*\]/' // JSON arrays
+                    ];
+                    
+                    foreach ($patterns as $pattern) {
+                        if (preg_match_all($pattern, $assistantReply, $matches)) {
+                            foreach ($matches[0] as $match) {
+                                $decoded = json_decode($match, true);
+                                if (json_last_error() === JSON_ERROR_NONE) {
+                                    $jsonMatches[] = [
+                                        'json' => $decoded,
+                                        'raw' => $match
+                                    ];
+                                }
+                            }
+                        }
+                    }
+
+                    
+                    if (!empty($jsonMatches)) {
+                        $search_params = $jsonMatches[0]['json'];
+                    }
+                }
+            }
+
+            if (count($search_params) > 0) {
+                $properties = $this->indexAI($search_params);
+                $response['properties'] = $properties;
+                $response['assistant_reply'] = '';
+            }
+            
+            return response()->json($response);
+        } catch (\Throwable $th) {
+            Log::error('chatAI error: ' . $th->getMessage());
+            return response()->json(['message' => 'Whoops, that didn\'t come out right — please try again!'], 500);
+        }
     }
 }

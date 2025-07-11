@@ -5,6 +5,7 @@
 :root {
   --background: #ededed;
   --foreground: #121212;
+  --loader-dot-color: #fff;
 }
 
 @theme inline {
@@ -17,6 +18,14 @@
 .overflow-y-auto {
   scrollbar-width: thin;
   scrollbar-color: var(--foreground) transparent;
+}
+
+.overflow-y-auto.messages-container {
+  scrollbar-color: #121212 transparent;
+}
+
+.background-ai {
+  background: linear-gradient(90deg,#3f5efb 0%, #fc466b 100%);
 }
 
 @theme {
@@ -121,4 +130,23 @@ html {
 
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease-out;
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 40px;
+  height: 20px;
+  --_g: no-repeat radial-gradient(circle closest-side, var(--loader-dot-color, #000) 90%, #0000);
+  background: 
+    var(--_g) 0%   50%,
+    var(--_g) 50%  50%,
+    var(--_g) 100% 50%;
+  background-size: calc(100%/3) 50%;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {
+    20%{background-position:0%   0%, 50%  50%,100%  50%}
+    40%{background-position:0% 100%, 50%   0%,100%  50%}
+    60%{background-position:0%  50%, 50% 100%,100%   0%}
+    80%{background-position:0%  50%, 50%  50%,100% 100%}
 }
