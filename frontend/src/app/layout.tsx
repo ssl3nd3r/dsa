@@ -16,8 +16,8 @@ const kantumruy = Kantumruy_Pro({
 });
 
 export const metadata: Metadata = {
-  title: "DSA (Dubai Smart Accommodation) - Find Your Perfect Home",
-  description: "Discover the perfect accommodation in Dubai through DSA (Dubai Smart Accommodation). Connect with property owners and service providers for a seamless living experience.",
+  title: "Dubai Smart Accommodation - Find Your Perfect Home",
+  description: "Discover the perfect accommodation in Dubai through Dubai Smart Accommodation (DSA). Connect with property owners and service providers for a seamless living experience.",
 };
 
 export default function RootLayout({

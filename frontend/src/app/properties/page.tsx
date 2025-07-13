@@ -12,6 +12,7 @@ import PropertyCard from "@/components/UI/PropertyCard";
 import Button from "@/components/UI/Button";
 import Select from "@/components/UI/Inputs/Select";
 import Loading from "@/components/Layouts/loading";
+import SearchComponentMobile from "@/components/UI/SearchComponentMobile";
 
 function PropertiesContent() {
   const searchParams = useSearchParams();
@@ -43,6 +44,7 @@ function PropertiesContent() {
         sort_order: effectiveParams?.sort_order || 'desc'
       }
     }))
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, [searchParams, dispatch, params])
 
   // Function for initial load and search param changes
@@ -68,6 +70,7 @@ function PropertiesContent() {
         sort_order: mappedParams?.sort_order || 'desc'
       }
     }))
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, [searchParams, dispatch])
 
   // Initial load and when search params change
@@ -84,10 +87,15 @@ function PropertiesContent() {
 
   return (
     <div className="flex-1 p-4 relative">
-      <SearchComponent params={params} maxWidth='1200px'/>
+      <div className="block md:hidden">
+        <SearchComponentMobile params={params}/>
+      </div>
+      <div className="hidden md:block">
+        <SearchComponent params={params} maxWidth='1200px'/>
+      </div>
       {error 
       ? 
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center h-full">
+      <div className="max-w-[1200px] py-20 px-4 text-center mx-auto h-full">
         <h1 className="text-2xl font-bold">Something went wrong</h1>
         <p>Please try again later</p>
       </div> 
@@ -142,11 +150,11 @@ function PropertiesContent() {
       :
       [...searchParams.entries()].length === 0
       ?
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
+      <div className="max-w-[1200px] py-20 px-4 text-center mx-auto">
         <h1 className="text-2xl font-bold">Please set some filters to start your search</h1>
       </div>
       :
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
+      <div className="max-w-[1200px] py-20 px-4 text-center mx-auto">
         <h1 className="text-2xl font-bold">No properties found</h1>
         <p>Please adjust your filters and try again.</p>
       </div>

@@ -13,6 +13,7 @@ import { AppDispatch } from '@/lib/store';
 
 export default function InformationForm() {
   const { user } = useAuth();
+  
   const dispatch = useDispatch<AppDispatch>();
   const {
     handleSubmit,
@@ -25,7 +26,7 @@ export default function InformationForm() {
       name: user?.name ?? '',
       email: user?.email ?? '',
       phone: user?.phone ?? '',
-      lifestyle: user?.lifestyle ? (Array.isArray(JSON.parse(user.lifestyle as string)) ? JSON.parse(user.lifestyle as string) : [user.lifestyle]) : [],
+      lifestyle: user?.lifestyle ? (Array.isArray(user.lifestyle) ? user.lifestyle : [user.lifestyle]) : [],
       work_schedule: user?.work_schedule ?? '',
     },
   });
@@ -166,7 +167,7 @@ export default function InformationForm() {
         >
           {isSubmitting ? (
             <div className='flex items-center gap-2'>
-              <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white'></div>
+              <div className='animate-spin rounded-full h-4 w-4 border-b-2 dark:border-white border-black hover:border-white dark:hover:border-black'></div>
               Saving...
             </div>
           ) : (

@@ -64,6 +64,7 @@ class User extends Authenticatable implements FilamentUser
         'move_in_date' => 'date',
         'is_verified' => 'boolean',
         'is_active' => 'boolean',
+        'lifestyle' => 'array',
     ];
 
     /**

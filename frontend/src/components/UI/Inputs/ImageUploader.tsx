@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import GalleryIcon from '../Assets/GalleryIcon';
 import CloseIcon from '../Assets/CloseIcon';
 import { errorToast } from '../Toast';
@@ -11,9 +11,41 @@ interface ImageUploaderProps {
   accept?: string;
 }
 
+interface ImageGridProps {
+  files: File[];
+  handleRemoveFile: (fileName: string) => void;
+}
+
+function ImageGrid({ files, handleRemoveFile }: ImageGridProps) {
+  if (files.length === 0) return null;
+  
+  return (
+    <div className='grid grid-cols-3 gap-2 mt-2'>
+      {files.map((file, index) => (
+        <div key={`${file.name}-${file.size}-${index}`} className='relative'>
+          <img src={URL.createObjectURL(file)} alt={file.name} className='h-20 mx-auto' />
+          <button 
+            className='absolute top-0 right-0 cursor-pointer' 
+            onClick={() => handleRemoveFile(file.name)}
+          >  
+            <CloseIcon size={16} />
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function ImageUploader({ onChange, isMulti = false, value, label, name, accept }: ImageUploaderProps) {
   const [files, setFiles] = useState<File[]>(value ?? []);
   const [uploading, setUploading] = useState(false);
+
+  const handleRemoveFile = useCallback((fileName: string) => {
+    const updatedFiles = files.filter((f) => f.name !== fileName);
+    setFiles(updatedFiles);
+    onChange(updatedFiles);
+    setUploading(false);
+  }, [files, onChange]);
   return (
     <div className='flex flex-col gap-1'>
         {label && <span className='block text-sm'>{label}</span>}
@@ -46,22 +78,7 @@ export default function ImageUploader({ onChange, isMulti = false, value, label,
             }
         }} />
 
-        {files.length > 0 && (
-          <div className='grid grid-cols-3 gap-2 mt-2'>
-          {files.map((file) => (
-              <div key={file.name+'-'+Math.random()} className='relative'>
-                  <img src={URL.createObjectURL(file)} alt={file.name} className='h-20 mx-auto' />
-                  <button className='absolute top-0 right-0 cursor-pointer' onClick={() => {
-                      setFiles(files.filter((f) => f.name !== file.name));
-                      onChange(files.filter((f) => f.name !== file.name));
-                      setUploading(false);
-                  }}>  
-                      <CloseIcon size={16} />
-                  </button>
-              </div>
-          ))}
-          </div>
-        )}
+        <ImageGrid files={files} handleRemoveFile={handleRemoveFile} />
     </div>
   )
 }

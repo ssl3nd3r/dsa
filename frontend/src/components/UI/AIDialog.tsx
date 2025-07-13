@@ -92,6 +92,7 @@ export default function AIDialog({ isOpen, threadId, setIsOpen, setThreadId }: A
           </div>
           <div className='flex items-center border-t border-black gap-2 px-2.5 py-4 md:rounded-b-xl background-ai'>
             <TextInput onKeyDown={(e) => {
+              if (loading) return;
               if (e.key === 'Enter') {
                 handleSendMessage();
               }

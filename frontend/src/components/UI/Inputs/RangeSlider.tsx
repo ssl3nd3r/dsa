@@ -4,16 +4,17 @@ import TextInput from './TextInput';
 interface RangeSliderProps {
   min?: number;
   max: number;
-  value: number[];
-  width?: string;
+  value: any;
   onChange: (event: Event, value: number[], activeThumb: number) => void;
   name: string;
+  className?: string;
 }
 
-export default function RangeSlider({ max, value, onChange, name, width = "100%" }: RangeSliderProps) {
-  const [rangeValue, setRangeValue] = useState<number[]>(value);
+export default function RangeSlider({ max, value, onChange, name, className }: RangeSliderProps) {
+  const [rangeValue, setRangeValue] = useState<any>(value);
 
   useEffect(() => {
+    
     onChange(new Event('change'), rangeValue, 0);
   }, [rangeValue]);
   
@@ -56,7 +57,7 @@ export default function RangeSlider({ max, value, onChange, name, width = "100%"
   // }
 
   return (
-    <div style={{width}} className='flex flex-col gap-1 rounded-md relative py-2 outline-none text-black dark:text-white'>
+    <div className={`flex flex-col gap-1 rounded-md relative py-2 outline-none text-black dark:text-white ${className}`}>
       <div className='flex items-center justify-between gap-2.5 text-sm'>
         <p>{name}</p>
       </div>
@@ -72,7 +73,7 @@ export default function RangeSlider({ max, value, onChange, name, width = "100%"
           max={rangeValue[1]}
           value={rangeValue[0]}
           onChange={(e) => {
-            setRangeValue([parseInt(e.target.value), rangeValue[1]]);
+            setRangeValue([(e.target.value), rangeValue[1]]);
           }}
         />
         <TextInput
@@ -86,7 +87,7 @@ export default function RangeSlider({ max, value, onChange, name, width = "100%"
           max={max}
           value={rangeValue[1]}
           onChange={(e) => {
-            setRangeValue([rangeValue[0], parseInt(e.target.value)]);
+            setRangeValue([rangeValue[0], (e.target.value)]);
           }}
           onBlur={(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             const maxValue = parseInt(e.target.value);

@@ -12,12 +12,15 @@ Route::get('/test', function () {
         abort(404);
     }
 
+    
     $propertiesController = new \App\Http\Controllers\Api\PropertyController();
-    $request = new \Illuminate\Http\Request([
-        'max_price' => 80000,
-        'min_price' => 1000,
-        // 'location' => ['Palm Jumeirah'],
-    ]);
-    $response = $propertiesController->index($request);
+    $request = [
+        'max_price' => 3000,
+        'location' => ['JBR (Jumeirah Beach Residence)'],
+        'room_type' => 'Private Room',
+        'amenities' => [],
+        'billing_cycle' => 'Monthly'
+    ];
+    $response = $propertiesController->indexAI($request);
     return response()->json($response);
 });

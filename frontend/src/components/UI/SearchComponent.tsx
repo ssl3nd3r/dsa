@@ -26,16 +26,7 @@ export default function SearchComponent({params, onHandleSearch, maxWidth}: Sear
   });
 
   useEffect (() => {
-    // setTimeout(() => {
-    //   setSearchParams(params ?? {
-    //     min_price: 1000,
-    //     max_price: 600000,
-    //       billing_cycle: BILLING_CYCLES[0],
-    //     });
-    // }, 300);
-
     if (params) {
-      console.log(params);
       setSearchParams(params);
     }  
   }, [params]);
@@ -95,24 +86,23 @@ export default function SearchComponent({params, onHandleSearch, maxWidth}: Sear
   }
 
   return (
-    <div style={{maxWidth: maxWidth ? maxWidth : 'unset'}} className={`${!maxWidth ? 'sm:w-[85%]' : 'w-full'} mx-auto dark:bg-black bg-white border dark:border-gray-700 border-gray-300 p-4 rounded-xl flex sm:flex-row flex-col items-center justify-between gap-5`}>
+    <div style={{maxWidth: maxWidth ? maxWidth : 'unset'}} className={`${!maxWidth ? 'sm:w-[85%]' : 'w-full'} mx-auto dark:bg-black bg-white border dark:border-gray-700 border-gray-300 p-4 rounded-xl flex flex-col justify-between gap-8`}>
       <div className='flex sm:flex-wrap sm:flex-row flex-col items-center gap-5 gap-y-1'>
-        <RangeSlider width='240px' min={0} max={99999999999} value={[searchParams.min_price ?? 1000, searchParams.max_price ?? 600000]} onChange={(_, value) => {setSearchParams({...searchParams, min_price: value[0], max_price: value[1]})}} name='Price AED' />
-        <Select value={searchParams.property_type} options={PROPERTY_TYPES} label='Property Type' onChange={(value) => {setSearchParams({...searchParams, property_type: value?.value || ""})}} />
-        <Select value={searchParams.room_type} options={ROOM_TYPES} label='Room Type' onChange={(value) => {setSearchParams({...searchParams, room_type: value?.value || ""})}} />
-        <Select value={searchParams.location} options={AREAS} label='Locations' isMulti onChange={(value) => {setSearchParams({...searchParams, location: value})}} />
+        <RangeSlider className='w-full md:w-[240px]' min={0} max={99999999999} value={[searchParams.min_price ?? 1000, searchParams.max_price ?? 600000]} onChange={(_, value) => {setSearchParams({...searchParams, min_price: value[0], max_price: value[1]})}} name='Price AED' />
+        <Select className='w-full md:w-fit' value={searchParams.property_type} options={PROPERTY_TYPES} label='Property Type' onChange={(value) => {setSearchParams({...searchParams, property_type: value?.value || ""})}} />
+        <Select className='w-full md:w-fit' value={searchParams.room_type} options={ROOM_TYPES} label='Room Type' onChange={(value) => {setSearchParams({...searchParams, room_type: value?.value || ""})}} />
+        <Select className='w-full md:w-fit' value={searchParams.location} options={AREAS} label='Locations' isMulti onChange={(value) => {setSearchParams({...searchParams, location: value})}} />
         <Select
+          className='w-full md:w-fit'
           value={searchParams.billing_cycle ?? BILLING_CYCLES[0]}
           options={BILLING_CYCLES}
           label='Billing Cycle'
           notClearable
           onChange={(value) => { setSearchParams({ ...searchParams, billing_cycle: value?.value || BILLING_CYCLES[0].value }) }}
         />
-        <Select value={searchParams.amenities} options={AMENITIES} label='Amenities' isMulti onChange={(value) => {setSearchParams({...searchParams, amenities: value})}} />
+        <Select className='w-full md:w-fit' value={searchParams.amenities} options={AMENITIES} label='Amenities' isMulti onChange={(value) => {setSearchParams({...searchParams, amenities: value})}} />
       </div>
-      <div className='flex text-sm md:mt-0 mt-8 items-center gap-2'>
-        <Button onClick={handleSearch}>Search</Button>
-      </div>
+      <Button className='self-end' onClick={handleSearch}>Search</Button>
     </div>
   )
 }
