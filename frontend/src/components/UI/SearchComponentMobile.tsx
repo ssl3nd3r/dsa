@@ -37,10 +37,11 @@ export default function SearchComponent({params, onHandleSearch}: SearchParams) 
       document.body.style.overflow = 'auto';
     }
   }, [isOpen]);
-  useEffect (() => {
+
+  useEffect(() => {
     if (params) {
       setSearchParams(params);
-    }  
+    }
   }, [params]);
 
   const handleSearch = () => {
@@ -96,7 +97,18 @@ export default function SearchComponent({params, onHandleSearch}: SearchParams) 
 
     if (onHandleSearch) onHandleSearch();
   }
-
+  const handlePriceChange = (_: unknown, value: number[]) => {
+    if (
+      value[0] !== searchParams.min_price ||
+      value[1] !== searchParams.max_price
+    ) {
+      setSearchParams({
+        ...searchParams,
+        min_price: value[0],
+        max_price: value[1]
+      });
+    }
+  }
   return (
     <div>
       <Button className='flex items-center gap-2' onClick={() => setIsOpen(true)}>
@@ -106,7 +118,7 @@ export default function SearchComponent({params, onHandleSearch}: SearchParams) 
       </Button>      
     <div className={`mx-auto dark:bg-black bg-white border dark:border-gray-700 border-gray-300 p-4 flex flex-col justify-between gap-8 fixed top-0 left-0 w-full h-full z-[999] ${isOpen ? 'left-0' : 'left-[-100%]'} transition-all duration-300`}>
         <div className='flex sm:flex-wrap sm:flex-row flex-col items-center gap-5 gap-y-3'>
-          <RangeSlider className='w-full md:w-[240px]' min={0} max={99999999999} value={[searchParams.min_price ?? 1000, searchParams.max_price ?? 600000]} onChange={(_, value) => {setSearchParams({...searchParams, min_price: value[0], max_price: value[1]})}} name='Price AED' />
+          <RangeSlider className='w-full md:w-[240px]' min={0} max={99999999999} value={[searchParams.min_price ?? 1000, searchParams.max_price ?? 600000]} onChange={handlePriceChange} name='Price AED' />
           <Select className='w-full md:w-fit' value={searchParams.property_type} options={PROPERTY_TYPES} label='Property Type' onChange={(value) => {setSearchParams({...searchParams, property_type: value?.value || ""})}} />
           <Select className='w-full md:w-fit' value={searchParams.room_type} options={ROOM_TYPES} label='Room Type' onChange={(value) => {setSearchParams({...searchParams, room_type: value?.value || ""})}} />
           <Select className='w-full md:w-fit' value={searchParams.location} options={AREAS} label='Locations' isMulti onChange={(value) => {setSearchParams({...searchParams, location: value})}} />

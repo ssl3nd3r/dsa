@@ -1,17 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import propertyReducer from './slices/propertySlice';
-import messageReducer from './slices/messageSlice';
-import serviceProviderReducer from './slices/serviceProviderSlice';
 import uiReducer from './slices/uiSlice';
+import messagingReducer from './slices/messagingSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     property: propertyReducer,
-    message: messageReducer,
-    serviceProvider: serviceProviderReducer,
     ui: uiReducer,
+    messaging: messagingReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

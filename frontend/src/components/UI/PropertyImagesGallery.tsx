@@ -4,6 +4,7 @@ import CloseIcon from './Assets/CloseIcon';
 import useEmblaCarousel from 'embla-carousel-react'
 
 
+
 interface PropertyImagesGalleryProps {
   open: boolean;
   images: string[];

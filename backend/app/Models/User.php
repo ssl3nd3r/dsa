@@ -38,6 +38,7 @@ class User extends Authenticatable implements FilamentUser
         'lease_duration',
         'is_verified',
         'is_active',
+        'unread_count',
     ];
 
     /**

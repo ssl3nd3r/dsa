@@ -16,7 +16,7 @@ export default function RangeSlider({ max, value, onChange, name, className }: R
   useEffect(() => {
     
     onChange(new Event('change'), rangeValue, 0);
-  }, [rangeValue]);
+  }, [rangeValue, onChange]);
   
   // const {theme} = useTheme();
 

@@ -18,7 +18,7 @@ export default function SearchModal({open, setSearchOpen}: SearchModalProps) {
   }, [open]);
 
   return (
-    <Fade in={isOpen} timeout={500}>
+    <Fade in={isOpen} timeout={500} unmountOnExit>
       <div className='fixed dark:text-white text-black dark:bg-black/50 bg-white/50 backdrop-blur-sm w-full h-full top-0 left-0 z-50'>
         <button onClick={() => setSearchOpen(false)} className='absolute top-4 right-4 cursor-pointer'>
           <CloseIcon />

@@ -19,6 +19,7 @@ export interface User {
   lease_duration?: '1-3 months' | '3-6 months' | '6-12 months' | '1+ years';
   is_verified: boolean;
   is_active: boolean;
+  unread_count: number;
   created_at: string;
   updated_at: string;
 }

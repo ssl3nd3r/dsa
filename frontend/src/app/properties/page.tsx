@@ -41,7 +41,7 @@ function PropertiesContent() {
       filters: {
         ...filters,
         sort_by: effectiveParams?.sort_by || 'created_at',
-        sort_order: effectiveParams?.sort_order || 'desc'
+        sort_order: effectiveParams?.sort_order || 'desc' 
       }
     }))
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -71,12 +71,12 @@ function PropertiesContent() {
       }
     }))
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [searchParams, dispatch])
+  }, [searchParams, dispatch]);
 
-  // Initial load and when search params change
+  // Initia, getProperties search params change
   useEffect(() => {
     getProperties(1);
-  }, [searchParams]);
+  }, [searchParams, getProperties]);
 
   // When params change (sorting, etc.), refetch with current page
   useEffect(() => {

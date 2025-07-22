@@ -20,12 +20,40 @@ class DatabaseSeeder extends Seeder
                 'email' => 'mayad@dsa.ae',
             ],
             [
-                'name' => 'Client',
-                'email' => 'client@dsa.ae',
+                'name' => fake()->name(),
+                'email' => 'vendor@dsa.ae',
             ],
             [
-                'name' => 'Vendor',
-                'email' => 'vendor@dsa.ae',
+                'name' => fake()->name(),
+                'email' => 'vendor2@dsa.ae',
+            ],
+            [
+                'name' => fake()->name(),
+                'email' => 'vendor3@dsa.ae',
+            ],
+            [
+                'name' => fake()->name(),
+                'email' => 'vendor4@dsa.ae',
+            ],
+            [
+                'name' => fake()->name(),
+                'email' => 'vendor5@dsa.ae',
+            ],
+            [
+                'name' => fake()->name(),
+                'email' => 'vendor6@dsa.ae',
+            ],
+            [
+                'name' => fake()->name(),
+                'email' => 'vendor7@dsa.ae',
+            ],
+            [
+                'name' => fake()->name(),
+                'email' => 'vendor8@dsa.ae',
+            ],
+            [
+                'name' => fake()->name(),
+                'email' => 'vendor9@dsa.ae',
             ],
             [
                 'name' => 'Jimmy',

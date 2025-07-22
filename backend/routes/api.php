@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\PropertyController;
-use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\MessagingController;
 use App\Http\Controllers\Api\ServiceProviderController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\OtpController;
@@ -43,14 +43,14 @@ Route::middleware('auth:sanctum')->group(function () {
     
 
     // Message routes
-    Route::post('/messages', [MessageController::class, 'store']);
-    Route::get('/messages/conversations', [MessageController::class, 'conversations']);
-    Route::get('/messages/conversation/{userId}', [MessageController::class, 'conversation']);
-    Route::get('/messages/unread-count', [MessageController::class, 'unreadCount']);
-    Route::put('/messages/{messageId}/read', [MessageController::class, 'markAsRead']);
-    Route::put('/messages/user/{userId}/read-all', [MessageController::class, 'markAllAsRead']);
-    Route::delete('/messages/{messageId}', [MessageController::class, 'destroy']);
-    Route::get('/messages/property/{propertyId}', [MessageController::class, 'propertyMessages']);
+    Route::post('/messages', [MessagingController::class, 'store']);
+    Route::get('/messages/conversations', [MessagingController::class, 'conversations']);
+    Route::get('/messages/conversation/{conversationId}', [MessagingController::class, 'conversation']);
+    Route::get('/messages/unread-count', [MessagingController::class, 'unreadCount']);
+    Route::put('/messages/conversation/{conversationId}/read', [MessagingController::class, 'markAsRead']);
+    Route::put('/messages/user/{userId}/read-all', [MessagingController::class, 'markAllAsRead']);
+    Route::delete('/messages/{messageId}', [MessagingController::class, 'destroy']);
+    Route::get('/messages/property/{propertyId}', [MessagingController::class, 'propertyMessages']);
     
     // Service Provider routes
     Route::get('/service-providers', [ServiceProviderController::class, 'index']);

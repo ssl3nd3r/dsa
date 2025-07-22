@@ -3,6 +3,7 @@ import ArrowEnter from './Assets/ArrowEnter'
 import { RouteLink } from '@/components/UI/RouteLink'
 import React from 'react'
 
+
 interface PropertyCardProps {
   property: Property;
   showDescription?: boolean;

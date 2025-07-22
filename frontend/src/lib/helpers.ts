@@ -64,3 +64,33 @@ export function formatSelectValue(value: any) {
     return value;
   }
 }
+
+export const formatDate = (date: string) => {
+  const msgDate = new Date(date);
+  const now = new Date();
+
+  const isToday =
+    msgDate.getDate() === now.getDate() &&
+    msgDate.getMonth() === now.getMonth() &&  
+    msgDate.getFullYear() === now.getFullYear();
+
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+
+  const isYesterday = 
+    msgDate.getDate() === yesterday.getDate() &&
+    msgDate.getMonth() === yesterday.getMonth() &&
+    msgDate.getFullYear() === yesterday.getFullYear();
+
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  const h = pad(msgDate.getHours()); 
+  const m = pad(msgDate.getMinutes());
+
+  if (isToday) {
+    return `${h}:${m}`;
+  } else if (isYesterday) {
+    return `yesterday ${h}:${m}`;
+  } else {
+    return `${pad(msgDate.getDate())}/${pad(msgDate.getMonth() + 1)}/${msgDate.getFullYear()} ${h}:${m}`;
+  }
+}

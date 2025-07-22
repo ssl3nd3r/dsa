@@ -20,7 +20,7 @@ export default function InterestedProperties() {
 
   useEffect(() => {
     dispatch(fetchUserInterestedProperties({ page: interestedPropertiesCurrentPage, limit: 10, title: debouncedSearch }));
-  }, [interestedPropertiesCurrentPage, debouncedSearch]);
+  }, [interestedPropertiesCurrentPage, debouncedSearch, dispatch]);
 
   return (
     <div>

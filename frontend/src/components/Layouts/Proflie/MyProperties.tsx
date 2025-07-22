@@ -21,7 +21,7 @@ export default function MyProperties() {
 
   useEffect(() => {
     dispatch(fetchUserMyProperties({ page: myPropertiesCurrentPage, limit: 10, title: debouncedSearch, is_available: isAvailable }));
-  }, [myPropertiesCurrentPage, debouncedSearch, isAvailable]);
+  }, [myPropertiesCurrentPage, debouncedSearch, isAvailable, dispatch]);
 
   return (
     <div>

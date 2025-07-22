@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/lib/store';
 import { fetchPropertyBySlug, addToInterests, removeFromInterests } from '@/lib/slices/propertySlice';
+import { sendMessage } from '@/lib/slices/messagingSlice';
 import GalleryIcon from '@/components/UI/Assets/GalleryIcon';
 import PropertyImagesGallery from '@/components/UI/PropertyImagesGallery';
 import Button from '@/components/UI/Button';
@@ -12,6 +13,7 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import BookMark from '@/components/UI/Assets/BookMark';
 import BookMarkFilled from '@/components/UI/Assets/BookMarkFilled';
 import { RouteLink } from '@/components/UI/RouteLink';
+import { useRouter } from 'next/navigation';
   
 interface PropertyPageProps {
   params: Promise<{
@@ -24,6 +26,8 @@ export default function PropertyPage({ params }: PropertyPageProps) {
   const { user } = useAuth();
   const { currentProperty } = useSelector((state: RootState) => state.property);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const router = useRouter();
   // Unwrap the params Promise
   const { slug } = React.use(params);
 
@@ -32,6 +36,23 @@ export default function PropertyPage({ params }: PropertyPageProps) {
       dispatch(fetchPropertyBySlug(slug));
     }
   }, [dispatch, slug]);
+
+  const handleChatOwner = () => {
+    if (currentProperty?.owner?.id && !isSending) {
+      setIsSending(true);
+      dispatch(sendMessage({
+        recipientId: currentProperty.owner?.id,
+        content: `Hello ${currentProperty.owner?.name}, I am interested in your property<br><a href="/properties/${currentProperty.slug}"><b>${currentProperty.title}</b></a>`,
+        isMedia: false,
+        propertyId: currentProperty.id,
+      })).unwrap().then(({message, conversation}) => {
+        console.log(message);
+        router.push(`/chat?conversationId=${conversation.id}`);
+      }).finally(() => {
+        setIsSending(false);
+      });
+    }
+  } 
 
   if (!currentProperty) {
     return (
@@ -196,6 +217,9 @@ export default function PropertyPage({ params }: PropertyPageProps) {
                   </div>
                   
                   <div className="mt-5 flex flex-col gap-2">
+                    <Button disabled={isSending} className="w-full disabled:opacity-50" onClick={handleChatOwner}>
+                      {isSending ? 'Sending...' : 'Chat Owner'}
+                    </Button>
                     {currentProperty.owner?.phone && (
                       <Button className="w-full" onClick={() => window.open(`tel:${currentProperty.owner?.phone}`, '_blank')}>
                         Call Owner

@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react'
 import GalleryIcon from '../Assets/GalleryIcon';
 import CloseIcon from '../Assets/CloseIcon';
 import { errorToast } from '../Toast';
+
 interface ImageUploaderProps {
   onChange: (files: File[]) => void;
   isMulti?: boolean;

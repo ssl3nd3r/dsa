@@ -21,7 +21,7 @@ export function RouteLink({ href, children, className = "", onClick }: Props) {
 
   useEffect(() => {
     dispatch(setLoading(isPending))
-  }, [isPending])
+  }, [isPending, dispatch])
 
   return (
       <Link
