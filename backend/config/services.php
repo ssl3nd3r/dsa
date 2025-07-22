@@ -44,9 +44,9 @@ return [
     ],
 
     'pusher' => [
-        'app_id' => env('PUSHER_APP_ID', '2022443'),
-        'app_key' => env('PUSHER_APP_KEY', '5261ffcb1273186f98ad'),
-        'app_secret' => env('PUSHER_APP_SECRET', 'e3b9a4ae6b729f807035'),
+        'app_id' => env('PUSHER_APP_ID'),
+        'app_key' => env('PUSHER_APP_KEY'),
+        'app_secret' => env('PUSHER_APP_SECRET'),
         'app_cluster' => env('PUSHER_APP_CLUSTER', 'ap2'),
     ],
 

@@ -13,19 +13,26 @@ import { AppDispatch } from '@/lib/store';
 import ConversationsList from '@/components/UI/Chat/ConversationsList';
 import ChatHeader from '@/components/UI/Chat/ChatHeader';
 import MessagesContainer from '@/components/UI/Chat/MessagesContainer';
-import { useSearchParams } from 'next/navigation';
   
 export default function Chat() {
   const dispatch = useDispatch<AppDispatch>();
-  const searchParams = useSearchParams();
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [showChats, setShowChats] = useState(true);
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  // Get conversationId from URL without useSearchParams
+  const getConversationId = () => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('conversationId');
+    }
+    return null;
+  };
+
   // Fetch conversations on component mount
   useEffect(() => {
     dispatch(fetchConversations()).unwrap().then(({conversations}) => {
-      const conversationId = searchParams.get('conversationId');
+      const conversationId = getConversationId();
       if (typeof window !== 'undefined' && window.history && window.location) {
         const url = new URL(window.location.href);
         url.search = '';
