@@ -10,12 +10,12 @@ interface ChatHeaderProps {
 }
 
 export default function ChatHeader({ setShowChats }: ChatHeaderProps) {
-  const { currentConversation, loading } = useSelector((state: RootState) => state.messaging);
+  const { currentConversation, loading, backUnreadCount } = useSelector((state: RootState) => state.messaging);
   return (
     currentConversation.otherUser && !loading.messages &&
     <div className='border-b pb-2 flex flex-col gap-2'>
       <button className='md:hidden mb-1 flex items-center gap-1.5' onClick={() => setShowChats(true)}>
-        <ArrowEnter className='rotate-180' /> Back
+        <ArrowEnter className='rotate-180' /> Back {backUnreadCount > 0 && <span className='bg-red-500 relative p-3 rounded-full min-w-[24px] h-[24px] text-center flex justify-center items-center text-xs text-white'>{backUnreadCount > 99 ? '99+' : backUnreadCount}</span>}
       </button>
       <div className='flex items-center gap-2'>
         <RouteLink className='h-full w-16 md:block hidden' href={`/properties/${currentConversation.property?.slug}`}>

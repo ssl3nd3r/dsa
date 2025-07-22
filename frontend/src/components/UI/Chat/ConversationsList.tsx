@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/lib/store';
-import { Conversation } from '@/lib/slices/messagingSlice';
+import { addConversation, Conversation } from '@/lib/slices/messagingSlice';
 import ConversationSelector from './ConversationSelector';
+import pusher from '@/lib/pusher';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 interface ConversationsListProps {
   handleConversationSelect: (conversation: Conversation) => void;
@@ -15,10 +17,25 @@ export default function ConversationsList({ handleConversationSelect, isMobile =
     loading,
     currentConversation
   } = useSelector((state: RootState) => state.messaging);
+  const dispatch = useDispatch();
+  const {user} = useAuth();
 
   const [activeConversationId, setActiveConversationId] = useState<number | null>(
     currentConversation.id
   );
+
+  useEffect(() => {
+    const channel = pusher.subscribe('conversation-created.' + user?.id);
+    
+    channel.bind('new-conversation-created', ({conversation}: {conversation: Conversation}) => {
+      console.log(conversation);
+      dispatch(addConversation(conversation));
+    });
+
+    return () => {
+      pusher.unsubscribe('conversation-created.' + user?.id);
+    };
+  }, []);
 
   // Keep local state in sync with Redux state
   useEffect(() => {
@@ -26,11 +43,13 @@ export default function ConversationsList({ handleConversationSelect, isMobile =
   }, [currentConversation.id]);
 
   // Sort conversations by last_message created_at (latest first)
-  const sortedConversations = [...conversations].sort((a, b) => {
-    const dateA = new Date(a.last_message?.created_at || a.created_at).getTime();
-    const dateB = new Date(b.last_message?.created_at || b.created_at).getTime();
-    return dateB - dateA; // Descending order (latest first)
-  });
+  const sortedConversations = React.useMemo(() => {
+    return [...conversations].sort((a, b) => {
+      const dateA = new Date(a.last_message?.created_at || a.created_at).getTime();
+      const dateB = new Date(b.last_message?.created_at || b.created_at).getTime();
+      return dateB - dateA; // Descending order (latest first)
+    });
+  }, [conversations]);
 
   // Wrapper function to handle conversation selection and manage active states
   const handleConversationSelectWrapper = (conversation: Conversation) => {

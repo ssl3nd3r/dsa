@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Events\MessageSent;
 use App\Events\ConversationReadCount;
 use App\Events\TotalReadCount;
-use Illuminate\Support\Facades\Log;
+use App\Events\ConversationCreated;
 
 class MessagingController extends Controller
 {
@@ -42,8 +42,10 @@ class MessagingController extends Controller
         $propertyId = $request->property_id;
 
         // Get or create conversation between the two users
-        $conversation = Conversation::getOrCreate($sender->id, $recipientId, $propertyId);
-        
+        $conversationResult = Conversation::getOrCreate($sender->id, $recipientId, $propertyId);
+        $conversation = $conversationResult['conversation'];
+        $isNewConversation = $conversationResult['was_created'];
+            
         // Create the message
         $message = Message::create([
             'conversation_id' => $conversation->id,
@@ -52,6 +54,23 @@ class MessagingController extends Controller
             'is_media' => $request->boolean('is_media', false),
             'status' => 'sent',
         ]);
+
+        if ($isNewConversation) {
+            $otherUser = $conversation->getOtherUser($recipientId);
+            $unreadCount = $conversation->getUnreadCount($recipientId);
+            
+            $conversationData = [
+                'id' => $conversation->id,
+                'other_user' => $otherUser,
+                'last_message' => $conversation->lastMessage,
+                'unread_count' => $unreadCount,
+                'total_messages' => 1,
+                'updated_at' => $conversation->updated_at,
+                'created_at' => $conversation->created_at,
+            ];
+            
+            event(new ConversationCreated($conversationData, $recipientId));
+        }
         
         // Load relationships for response
         $message->load(['sender', 'conversation']);

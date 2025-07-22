@@ -10,8 +10,8 @@ import {
   Conversation, 
 } from '@/lib/slices/messagingSlice';
 import { AppDispatch } from '@/lib/store';
-import ConversationsList from '@/components/UI/Chat/ConversationsList';
 import ChatHeader from '@/components/UI/Chat/ChatHeader';
+import ConversationsList from '@/components/UI/Chat/ConversationsList';
 import MessagesContainer from '@/components/UI/Chat/MessagesContainer';
   
 export default function Chat() {

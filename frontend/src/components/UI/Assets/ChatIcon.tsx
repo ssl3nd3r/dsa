@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react'
-import { useSelector } from 'react-redux';
-import { RootState } from '@/lib/store';
+import React, { useEffect, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/lib/store';
+import { setBackUnreadCount } from '@/lib/slices/messagingSlice';
 
 interface ChatIconProps {
   size?: number;
@@ -8,11 +9,15 @@ interface ChatIconProps {
 }
 
 export default function ChatIcon({ size = 20, unreadCount = 0 }: ChatIconProps) {
-
+  const dispatch = useDispatch<AppDispatch>();
   const { currentConversation } = useSelector((state: RootState) => state.messaging);
   const totalUnreadCount = useMemo(() => {
     return unreadCount - (currentConversation.unreadCount ?? 0);
   }, [currentConversation, unreadCount]);
+
+  useEffect(() => {
+    dispatch(setBackUnreadCount(totalUnreadCount));
+  }, [totalUnreadCount]);
 
   return (
     <div className='relative'>

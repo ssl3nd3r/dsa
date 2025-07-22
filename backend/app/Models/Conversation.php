@@ -125,6 +125,7 @@ class Conversation extends Model
         }
         
         $conversation = $conversation->first();
+        $wasCreated = false;
         
         if (!$conversation) {
             $conversation = self::create([
@@ -132,9 +133,13 @@ class Conversation extends Model
                 'second_user_id' => max($user1Id, $user2Id),
                 'property_id' => $propertyId,
             ]);
+            $wasCreated = true;
         }
         
-        return $conversation;
+        return [
+            'conversation' => $conversation,
+            'was_created' => $wasCreated
+        ];
     }
 
     /**

@@ -46,6 +46,7 @@ export interface MessagingState {
     unreadCount: boolean;
   };
   error: string | null;
+  backUnreadCount: number;
 }
 
 const initialState: MessagingState = {
@@ -65,6 +66,7 @@ const initialState: MessagingState = {
     unreadCount: false,
   },
   error: null,
+  backUnreadCount: 0,
 };
 
 // Async thunks
@@ -152,10 +154,22 @@ const messagingSlice = createSlice({
         property: null,
         unreadCount: 0,
       };
+      state.backUnreadCount = 0;
+    },
+    addConversation: (state, action: PayloadAction<Conversation>) => {
+      const conversation = action.payload;
+      const existingConversation = state.conversations.find(
+        conv => conv.id === conversation.id
+      );
+      if (!existingConversation) {
+        state.conversations.unshift(conversation);
+      }
     },
     addMessageToConversation: (state, action: PayloadAction<Message>) => {
       const message = action.payload;
       
+      console.log(message);
+
       // Add to current conversation if it matches
       if (state.currentConversation.id === message.conversation_id) {
         // Check if message already exists to prevent duplicates
@@ -236,6 +250,9 @@ const messagingSlice = createSlice({
     decrementUnreadCount: (state, action: PayloadAction<number>) => {
       const count = action.payload;
       state.unreadCount = Math.max(0, state.unreadCount - count);
+    },
+    setBackUnreadCount: (state, action: PayloadAction<number>) => {
+      state.backUnreadCount = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -454,6 +471,8 @@ export const {
   updateMessageStatus,
   incrementUnreadCount,
   decrementUnreadCount,
+  addConversation,
+  setBackUnreadCount,
 } = messagingSlice.actions;
 
 export default messagingSlice.reducer; 
