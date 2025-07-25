@@ -53,7 +53,7 @@ export const registerUser = createAsyncThunk(
     password: string;
     lifestyle?: string[] | 'Quiet' | 'Active' | 'Smoker' | 'Non-smoker' | 'Pet-friendly' | 'No pets';
     personality_traits?: string[];
-    work_schedule?: '9-5' | 'Night shift' | 'Remote' | 'Flexible' | 'Student';
+    work_schedule?: '9-5' | 'Night shift' | 'Remote' | 'Flexible' | 'Student' | string;
     cultural_preferences?: string[];
   }, { rejectWithValue }) => {
     try {
@@ -73,7 +73,7 @@ export const completeRegister = createAsyncThunk(
     password: string;
     lifestyle: string[] | 'Quiet' | 'Active' | 'Smoker' | 'Non-smoker' | 'Pet-friendly' | 'No pets';
     personality_traits?: string[];
-    work_schedule: '9-5' | 'Night shift' | 'Remote' | 'Flexible' | 'Student';
+    work_schedule: '9-5' | 'Night shift' | 'Remote' | 'Flexible' | 'Student' | string;
     cultural_preferences?: string[];
     otp_code: string;
   }, { rejectWithValue }) => {

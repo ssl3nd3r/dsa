@@ -1,5 +1,5 @@
-// export const API_URL = 'https://khaki-dove-475271.hostingersite.com/api';
-export const API_URL = 'http://localhost:8000/api';
+export const API_URL = 'https://khaki-dove-475271.hostingersite.com/api';
+// export const API_URL = 'http://localhost:8000/api';
 
 export const PUSHER_APP_ID = '2022443';
 export const PUSHER_KEY = '5261ffcb1273186f98ad';

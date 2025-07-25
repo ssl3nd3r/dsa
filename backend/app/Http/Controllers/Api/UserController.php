@@ -59,8 +59,9 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:50',
             'email' => 'required|email|unique:users,email',
+            'phone' => 'required|string|max:15',
             'password' => 'required|string|min:6',
-            'lifestyle' => 'required|string',
+            'lifestyle' => 'required|array',
             'personality_traits' => 'nullable|array|max:8',
             'work_schedule' => 'required|string',
             'cultural_preferences' => 'nullable|array',
@@ -79,6 +80,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
             'lifestyle' => $request->lifestyle,
             'personality_traits' => $request->personality_traits,

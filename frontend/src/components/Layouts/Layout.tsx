@@ -26,7 +26,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <>
-      {pathname !== '/login' && pathname !== '/verify-login' && pathname !== '/profile' && (  
+      {pathname !== '/login' && pathname !== '/verify-login' && pathname !== '/profile' && pathname !== '/register' && (  
         <Loading loading={loading || propertyLoading || authLoading} />
       )}
       <Header />
