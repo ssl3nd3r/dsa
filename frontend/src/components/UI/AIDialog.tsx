@@ -6,7 +6,10 @@ import TextInput from './Inputs/TextInput'
 import SendIcon from './Assets/SendIcon'
 import api from '@/lib/api'
 import AIMessage from './AIMessage'
+import Button from './Button'
 import { AI_MESSAGES_INTRODUCTION } from '@/lib/constants'
+import { useAuth } from '@/lib/hooks/useAuth'
+import { useRouter } from 'next/navigation'
 
 interface AIDialogProps {
   isOpen: boolean;
@@ -23,6 +26,8 @@ export interface Message {
 }
 
 export default function AIDialog({ isOpen, threadId, setIsOpen, setThreadId }: AIDialogProps) {
+  const { user } = useAuth({disableRedirect: true});
+  const router = useRouter();
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesContainer = useRef<HTMLDivElement>(null);
@@ -80,27 +85,36 @@ export default function AIDialog({ isOpen, threadId, setIsOpen, setThreadId }: A
               <p className='text-sm !text-white font-semibold'>DSA AI</p>
             </div>
             <button className='cursor-pointer !text-white' onClick={() => setIsOpen(false)}>
-              <CloseIcon size={20} />
+              <CloseIcon size={20} className='!text-white' />
             </button>
           </div>
-          <div ref={messagesContainer} className='flex-1 px-2.5 py-4 overflow-y-auto messages-container bg-white'>
-            <div className='flex flex-col gap-4 '>
-              {messages.map((message, index) => (
-                <AIMessage key={index} message={message} setIsOpen={setIsOpen}/>
-              ))}
+          {user ? 
+            <div ref={messagesContainer} className='flex-1 px-2.5 py-4 overflow-y-auto messages-container bg-white'>
+              <div className='flex flex-col gap-4 '>
+                {messages.map((message, index) => (
+                  <AIMessage key={index} message={message} setIsOpen={setIsOpen}/>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className='flex items-center border-t border-black gap-2 px-2.5 py-4 md:rounded-b-xl background-ai'>
-            <TextInput onKeyDown={(e) => {
-              if (loading) return;
-              if (e.key === 'Enter') {
-                handleSendMessage();
-              }
-            }} className='flex-1' inputClassName='!text-sm !bg-white !text-black !placeholder-black/80' placeholder='Ask me anything...' label='Ask me anything...' name='ask' type='text' autoComplete='off' value={message} onChange={(e) => setMessage(e.target.value)} />
-            <button disabled={!message || message.length < 2 || message === '' || loading} onClick={() => handleSendMessage()} className='p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-opacity duration-200 bg-white text-black cursor-pointer'>
-              <SendIcon size={20} />
-            </button>
-          </div>
+            :
+            <div className='flex items-center bg-white justify-center h-full flex-col gap-4 md:rounded-b-xl'>
+              <p className='text-sm text-dsa-orange font-semibold'>Please login to use the AI assistant</p>
+              <Button onClick={() => {router.push('/login'); setIsOpen(false);}} className='hover:!bg-dsa-orange hover:!text-white'>Login</Button>
+            </div>
+          }
+          {user && 
+            <div className='flex items-center border-t border-black gap-2 px-2.5 py-4 md:rounded-b-xl background-ai'>
+              <TextInput onKeyDown={(e) => {
+                if (loading) return;
+                if (e.key === 'Enter') {
+                  handleSendMessage();
+                }
+              }} className='flex-1' inputClassName='!text-sm !bg-white !text-black !placeholder-black/80' placeholder='Ask me anything...' label='Ask me anything...' name='ask' type='text' autoComplete='off' value={message} onChange={(e) => setMessage(e.target.value)} />
+              <button disabled={!message || message.length < 2 || message === '' || loading} onClick={() => handleSendMessage()} className='p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-opacity duration-200 bg-white text-black cursor-pointer'>
+                <SendIcon size={20} />
+              </button>
+            </div>
+          }
         </div>
       </div>
     </Grow>

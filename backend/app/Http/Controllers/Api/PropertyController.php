@@ -297,6 +297,8 @@ class PropertyController extends Controller
         if (!$property) {
             return response()->json(['error' => 'Property not found'], 404);
         }
+        
+        Log::info('property: ' . json_encode($property));
 
         return response()->json(['property' => $property->toPublicArray()]);
     }

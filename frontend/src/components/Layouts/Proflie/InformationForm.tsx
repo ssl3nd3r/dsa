@@ -47,14 +47,14 @@ export default function InformationForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col md:gap-10 gap-6'>
       <div className='flex items-center justify-between'>
-        <h1 className='text-2xl font-bold'>Profile Details</h1>
+        <h1 className='text-2xl font-bold text-dsa-orange'>Profile Details</h1>
         <div className={`text-sm ${isValid ? 'text-green-500' : 'text-red-500'}`}>
           {isValid ? '✓ All fields are valid' : 'Please fill in all required fields'}
         </div>
       </div>
       
       <div className='flex flex-col gap-4'>
-        <h2 className='text-lg font-bold'>Personal Information</h2>
+        <h2 className='text-lg font-bold text-dsa-orange'>Personal Information</h2>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='flex flex-col gap-1'>
             <TextInput 
@@ -119,7 +119,7 @@ export default function InformationForm() {
       </div>
 
       <div className='flex flex-col gap-4'>
-        <h2 className='text-lg font-bold'>Preferences</h2>
+        <h2 className='text-lg font-bold text-dsa-orange'>Preferences</h2>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='flex flex-col gap-1'>
             <Select 

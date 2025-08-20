@@ -17,8 +17,8 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
     <div
       className={`px-2 py-3 rounded-lg w-fit max-w-[70%] min-w-[120px] ${
         message.sender_id === user?.id || message.is_optimistic
-          ? 'ml-auto bg-blue-500 text-white'
-          : 'bg-gray-700 text-white'
+          ? 'ml-auto bg-dsa-blue text-white'
+          : 'bg-dsa-orange text-white'
       }`}
     >
       <div dangerouslySetInnerHTML={{ __html: message.content || '' }} className='text-sm'></div>

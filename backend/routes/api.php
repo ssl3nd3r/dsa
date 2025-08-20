@@ -23,6 +23,10 @@ Route::post('/otp/register/resend', [OtpController::class, 'resendRegisterOtp'])
 // Login OTP routes
 Route::post('/otp/login/resend', [OtpController::class, 'resendLoginOtp']);
 
+// Public property routes
+Route::get('/properties', [PropertyController::class, 'index']);
+Route::get('/properties/{slug}', [PropertyController::class, 'show']);
+
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     // User routes
@@ -31,11 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/user/password', [UserController::class, 'changePassword']);
     
     // Property routes
-    Route::get('/properties', [PropertyController::class, 'index']);
     Route::get('/properties/search', [PropertyController::class, 'search']);
     Route::post('/properties/my', [PropertyController::class, 'myProperties']);
     Route::post('/properties/interested', [PropertyInterestController::class, 'getUserInterestedProperties']);
-    Route::get('/properties/{slug}', [PropertyController::class, 'show']);
     Route::post('/properties', [PropertyController::class, 'store']);
     Route::put('/properties/{slug}', [PropertyController::class, 'update']);
     Route::delete('/properties/{slug}', [PropertyController::class, 'destroy']);

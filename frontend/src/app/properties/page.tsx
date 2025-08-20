@@ -1,6 +1,6 @@
 'use client'
 
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+// import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -104,7 +104,7 @@ function PropertiesContent() {
       ? 
       <>
         <div className="mt-10 flex justify-between md:flex-row flex-col md:items-center max-w-[1200px] mx-auto gap-y-4">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-dsa-orange">
             <p><span className="font-semibold text-lg">{totalCount}</span> listings found</p>
           </div>
           <Select
@@ -165,11 +165,11 @@ function PropertiesContent() {
 
 export default function PropertiesPage() {
   return (
-    <ProtectedRoute>
+    // <ProtectedRoute>
       <Suspense fallback={<Loading />}>
         <PropertiesContent />
       </Suspense>
-    </ProtectedRoute>
+    // </ProtectedRoute>
   );
 } 
   

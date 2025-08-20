@@ -5,7 +5,7 @@ import Loading from "./loading";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { usePathname } from "next/navigation";
-// import { useEffect } from "react";
+import { useEffect } from "react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,11 +17,11 @@ export default function Layout({ children }: LayoutProps) {
   const {loading: propertyLoading} = useSelector((state: RootState) => state.property)
   const {loading: authLoading} = useSelector((state: RootState) => state.auth)
 
-  // useEffect(() => {
-  //   console.log('loading', loading);
-  //   console.log('propertyLoading', propertyLoading);
-  //   console.log('authLoading', authLoading);
-  // }, [loading, propertyLoading, authLoading])
+  useEffect(() => {
+    console.log('uiLoading', loading);
+    console.log('propertyLoading', propertyLoading);
+    console.log('authLoading', authLoading);
+  }, [loading, propertyLoading, authLoading])
 
 
   return (

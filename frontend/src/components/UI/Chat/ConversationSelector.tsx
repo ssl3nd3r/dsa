@@ -50,8 +50,8 @@ export default function ConversationSelector({ conversation, handleConversationS
       onClick={() => {
         handleConversationSelect(conversation);
       }}
-      className={`p-3.5 flex gap-2 transition-colors duration-300 cursor-pointer disabled:cursor-default items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-600 w-full text-left ${
-        isActive ? 'bg-gray-100/80 dark:bg-gray-600/80' : ''
+      className={`p-3.5 flex gap-2 transition-colors duration-300 cursor-pointer disabled:cursor-default items-center justify-between hover:bg-dsa-blue dark:hover:bg-dsa-blue w-full text-left ${
+        isActive ? 'bg-dsa-blue/80 dark:bg-dsa-blue/80' : ''
       }`}
     >
       <div className='flex-1 min-w-0'>

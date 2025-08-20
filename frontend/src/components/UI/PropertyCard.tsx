@@ -24,13 +24,13 @@ export default function PropertyCard({property, showDescription = true, showAvai
       </div>
       <div className="px-4 pt-4 flex flex-col justify-between">
         <div className='flex items-center justify-between w-full gap-2'>
-          <h2 className="text-xl font-semibold text-black dark:text-white mb-2">{property.title}</h2>
+          <h2 className="text-xl font-semibold text-dsa-blue mb-2">{property.title}</h2>
         </div>
         <div className="flex flex-col gap-1">
-          <div className="text-2xl font-bold text-black dark:text-white">
+          <div className="text-2xl font-bold text-dsa-orange">
             {property.price.toLocaleString()} {property.currency}
           </div>
-          <div className="text-sm text-black dark:text-white">
+          <div className="text-sm text-dsa-orange">
             {property.billing_cycle}
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function PropertyCard({property, showDescription = true, showAvai
       
       {property.amenities && property.amenities.length > 0 && (
         <div className="px-4">
-          <h4 className="text-sm font-medium text-black dark:text-white mb-2">Amenities:</h4>
+          <h4 className="text-sm font-medium mb-2">Amenities:</h4>
           <div className="flex flex-wrap gap-1">
             {property.amenities.slice(0, 5).map((amenity, index) => (
               <span key={index} className="px-2 py-1 dark:bg-gray-800 bg-gray-100 dark:text-gray-100 text-gray-700 rounded text-xs">
@@ -90,7 +90,7 @@ export default function PropertyCard({property, showDescription = true, showAvai
       )}
       
       <div className="px-4 pb-4 mt-auto flex justify-between items-center text-sm text-black dark:text-white">
-        <div>
+        <div className='text-dsa-orange font-semibold'>
           Available from: {property.available_from ? new Date(property.available_from).toLocaleDateString() : 'N/A'}
         </div>
         {property.is_available && (

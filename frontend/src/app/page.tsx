@@ -2,11 +2,11 @@
 
 import React from 'react';
 import PropertyTypeCard from '@/components/UI/PropertyTypeCard';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+// import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 export default function HomePage() {
   return (
-    <ProtectedRoute> 
+    // <ProtectedRoute> 
     <div className="flex-1 pb-10">
       <div style={{backgroundImage: 'url(/dubai-skyline.jpg)'}} className="w-full bg-black/60 bg-blend-darken bg-cover bg-center pb-28 pt-14 md:py-28">
         <div className='flex flex-col items-center justify-center h-full px-4'>
@@ -28,6 +28,6 @@ export default function HomePage() {
         <PropertyTypeCard label='Private Room' type='Private Room' propertyOrRoomType='room' />
       </div>
     </div>
-    </ProtectedRoute>
+    // </ProtectedRoute>
   );
 }

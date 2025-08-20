@@ -10,6 +10,6 @@ interface ButtonProps {
 
 export default function Button({ children, onClick = () => {}, type = 'button', disabled = false, className = '' }: ButtonProps) {
   return (
-    <button onClick={onClick} type={type} disabled={disabled} className={`cursor-pointer bg-white dark:bg-black border border-black dark:border-white text-black dark:text-white px-4 py-2 rounded-lg transition-colors duration-300 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black ${className}`}>{children}</button>
+    <button onClick={onClick} type={type} disabled={disabled} className={`cursor-pointer bg-dsa-blue  text-white px-4 py-2 transition-colors duration-300 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black rounded-lg ${className}`}>{children}</button>
   )
 }

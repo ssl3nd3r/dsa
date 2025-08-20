@@ -62,7 +62,7 @@ export default function ListAPropertyForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col md:gap-10 gap-6'>
       <div className='flex flex-col md:flex-row md:items-center justify-between'>
-        <h1 className='text-2xl font-bold'>List a property</h1>
+        <h1 className='text-2xl font-bold text-dsa-orange'>List a property</h1>
         <div className={`text-sm ${isValid ? 'text-green-500' : 'text-red-500'}`}>
           {isValid ? '✓ All fields are valid' : 'Please fill in all required fields'}
         </div>

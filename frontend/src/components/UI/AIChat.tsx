@@ -11,7 +11,7 @@ export default function AIChat() {
       <div>
         <AIDialog isOpen={isOpen} threadId={threadId} setIsOpen={setIsOpen} setThreadId={setThreadId} />
         <button
-          className="p-2 fixed cursor-pointer bottom-4 right-4 rounded-full bg-black dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-black"
+          className="p-2 fixed cursor-pointer bottom-4 right-4 rounded-full bg-dsa-blue hover:bg-dsa-blue/80 text-white"
           aria-label={`AI Chat`}
           onClick={() => setIsOpen(!isOpen)}
         >

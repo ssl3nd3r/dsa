@@ -25,7 +25,7 @@ export default function InterestedProperties() {
   return (
     <div>
         <div className='flex gap-3 items-center justify-between'>
-          <h1 className='text-2xl font-bold'>Saved Properties</h1>
+          <h1 className='text-2xl font-bold text-dsa-orange'>Saved Properties</h1>
           <div className='flex items-center gap-3 relative'>
             <Fade in={isDebouncing || loading} timeout={200} unmountOnExit>
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 dark:border-white border-black"></div>
@@ -72,7 +72,7 @@ export default function InterestedProperties() {
             </div>
           </div>
           </>
-          ) : <p className='md:mt-10 mt-5 text-center text-lg font-bold'>No properties found</p>}
+          ) : <p className='md:mt-10 mt-5 text-center text-lg font-bold text-dsa-orange'>No properties found</p>}
         </div>
     </div>
   )

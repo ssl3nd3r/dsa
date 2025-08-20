@@ -113,7 +113,7 @@ export default function Register() {
 
             <div className="flex items-center justify-between">
               <div className="text-sm">
-                <button type="button" onClick={() => setVerifyOtp(false)} className="cursor-pointer font-medium dark:text-white text-black hover:text-blue-700">
+                <button type="button" onClick={() => setVerifyOtp(false)} className="cursor-pointer font-medium dark:text-white text-black hover:text-dsa-blue">
                   Back to registration form
                 </button>
               </div>
@@ -128,14 +128,14 @@ export default function Register() {
             </h2>
             <p className="mt-2 text-center text-sm text-black dark:text-white">
               Or{' '}
-              <RouteLink href="/login" className="font-medium text-black dark:text-white hover:text-blue-700">
+              <RouteLink href="/login" className="font-medium text-black dark:text-white hover:text-dsa-blue">
                 sign in to your account
               </RouteLink>
             </p>
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-4">
-              <h2 className="text-lg font-bold">Personal Information</h2>
+              <h2 className="text-lg font-bold text-dsa-orange">Personal Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-1">
                   <TextInput
@@ -216,7 +216,7 @@ export default function Register() {
               </div>
             </div>
             <div className="flex flex-col gap-4">
-              <h2 className="text-lg font-bold">Preferences</h2>
+              <h2 className="text-lg font-bold text-dsa-orange">Preferences</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-1">
                   <Select

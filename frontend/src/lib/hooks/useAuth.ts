@@ -29,9 +29,11 @@ export const useAuth = (options: UseAuthOptions = {}) => {
   useEffect(() => {
     // If authentication is required and user is not authenticated, redirect
     if (requireAuth && !loading && !isAuthenticated && !disableRedirect && !token) {
+      console.log('sss');
       router.push(redirectTo);
     }
     else {
+      console.log('fff');
       setIsLoading(false);
     }
   }, [requireAuth, loading, isAuthenticated, redirectTo, router, disableRedirect, token]);

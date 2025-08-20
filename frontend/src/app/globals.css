@@ -3,14 +3,18 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ededed;
+  --background: #d8d6d6;
   --foreground: #121212;
+  --dsa-blue: #0192cd;
+  --dsa-orange: #ee8011;
   --loader-dot-color: #fff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-dsa-blue: var(--dsa-blue);
+  --color-dsa-orange: var(--dsa-orange);
   --font-sans: var(--font-montserrat);
   --font-kantumruy: var(--font-kantumruy);
 }
@@ -35,6 +39,9 @@
 .dark {
   --background: #121212;
   --foreground: #ededed;
+  --dsa-blue: #4aa8ce;
+  --dsa-orange: #e7933f;
+
 }
 
 

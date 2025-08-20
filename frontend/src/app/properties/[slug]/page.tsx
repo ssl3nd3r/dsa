@@ -8,7 +8,7 @@ import { sendMessage } from '@/lib/slices/messagingSlice';
 import GalleryIcon from '@/components/UI/Assets/GalleryIcon';
 import PropertyImagesGallery from '@/components/UI/PropertyImagesGallery';
 import Button from '@/components/UI/Button';
-import {ProtectedRoute} from '@/components/ProtectedRoute';
+// import {ProtectedRoute} from '@/components/ProtectedRoute';
 import { useAuth } from '@/lib/hooks/useAuth';
 import BookMark from '@/components/UI/Assets/BookMark';
 import BookMarkFilled from '@/components/UI/Assets/BookMarkFilled';
@@ -23,7 +23,7 @@ interface PropertyPageProps {
 
 export default function PropertyPage({ params }: PropertyPageProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useAuth();
+  const { user } = useAuth({disableRedirect: true});
   const { currentProperty } = useSelector((state: RootState) => state.property);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -38,7 +38,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
   }, [dispatch, slug]);
 
   const handleChatOwner = () => {
-    if (currentProperty?.owner?.id && !isSending) {
+    if (user && currentProperty?.owner?.id && !isSending) {
       setIsSending(true);
       dispatch(sendMessage({
         recipientId: currentProperty.owner?.id,
@@ -52,11 +52,15 @@ export default function PropertyPage({ params }: PropertyPageProps) {
         setIsSending(false);
       });
     }
+    else {
+      router.push('/login');
+    }
   } 
 
   if (!currentProperty) {
     return (
-      <ProtectedRoute>
+      // <ProtectedRoute>
+      <>
         <div className='hidden'>
           <RouteLink href='/'/>            
         </div>
@@ -66,13 +70,17 @@ export default function PropertyPage({ params }: PropertyPageProps) {
             <p>The property you&apos;re looking for doesn&apos;t exist.</p>
           </div>
         </div>
-      </ProtectedRoute>
+      </>
+      // </ProtectedRoute>
       ) ;
   }
 
   return (
-    <ProtectedRoute>  
+    // <ProtectedRoute>  
         <div className="flex-1 py-10 px-4">
+          <div className='hidden'>
+            <RouteLink href='/'/>            
+          </div>
           <div className="max-w-[1200px] mx-auto">
             {/* Property Images */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
@@ -99,13 +107,13 @@ export default function PropertyPage({ params }: PropertyPageProps) {
               <div className="lg:col-span-2">
                 <div className="bg-white dark:bg-black rounded-2xl shadow-lg p-8 mb-8">
                   <div className="flex md:flex-row flex-col gap-y-5 md:items-center md:justify-between justify-start mb-6">
-                    <h1 className="text-3xl font-bold dark:text-white text-black">{currentProperty.title}</h1>
+                    <h1 className="text-3xl font-bold text-dsa-blue">{currentProperty.title}</h1>
                     <div className='flex flex-col gap-1'>
-                      <div className="text-2xl flex items-center gap-2 font-bold dark:text-white text-black">
-                        <span className="text-black dark:text-white">AED</span>
+                      <div className="text-2xl flex items-center gap-2 font-bold text-dsa-orange">
+                        <span className="">AED</span>
                         {currentProperty.price.toLocaleString()}
                       </div>
-                      <span className="text-sm text-black dark:text-white md:text-right text-left">
+                      <span className="text-sm  md:text-right text-left text-dsa-orange">
                         {currentProperty.billing_cycle}
                       </span>
                     </div>
@@ -128,7 +136,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
                   </div>
 
                   <div className="border-t pt-6">
-                    <h3 className="dark:text-white text-black text-xl font-semibold mb-4">Location</h3>
+                    <h3 className="text-dsa-orange text-xl font-semibold mb-4">Location</h3>
                     <p className="dark:text-white text-black">
                       {currentProperty.address.street}, {currentProperty.location}, {currentProperty.address.city}
                     </p>
@@ -138,48 +146,48 @@ export default function PropertyPage({ params }: PropertyPageProps) {
 
                 {/* Amenities */}
                 <div className="bg-white dark:bg-black rounded-2xl shadow-lg p-8">
-                  <h3 className="dark:text-white text-black text-xl font-semibold mb-6">Amenities</h3>
+                  <h3 className="text-dsa-orange text-xl font-semibold mb-6">Amenities</h3>
                   <div className="grid grid-cols-2 gap-4">
                     {currentProperty.furnished && (
                       <div className="flex items-center">
-                        <span className="dark:text-green-500 text-green-500 mr-2">✓</span>
+                        <span className="text-dsa-blue mr-2">✓</span>
                         <span className="dark:text-white text-black">Furnished</span>
                       </div>
                     )}
                     {currentProperty.parking && (
                       <div className="flex items-center">
-                        <span className="dark:text-green-500 text-green-500 mr-2">✓</span>
+                        <span className="text-dsa-blue mr-2">✓</span>
                         <span className="dark:text-white text-black">Parking</span>
                       </div>
                     )}
                     {currentProperty.balcony && (
                       <div className="flex items-center">
-                        <span className="dark:text-green-500 text-green-500 mr-2">✓</span>
+                        <span className="text-dsa-blue mr-2">✓</span>
                         <span className="dark:text-white text-black">Balcony</span>
                       </div>
                     )}
                     {currentProperty.gym && (
                       <div className="flex items-center">
-                        <span className="dark:text-green-500 text-green-500 mr-2">✓</span>
+                        <span className="text-dsa-blue mr-2">✓</span>
                         <span className="dark:text-white text-black">Gym</span>
                       </div>
                     )}
                     {currentProperty.pool && (
                       <div className="flex items-center">
-                        <span className="dark:text-green-500 text-green-500 mr-2">✓</span>
+                        <span className="text-dsa-blue mr-2">✓</span>
                         <span className="dark:text-white text-black">Pool</span>
                       </div>
                     )}
                     {currentProperty.security && (
                       <div className="flex items-center">
-                        <span className="dark:text-green-500 text-green-500 mr-2">✓</span>
+                        <span className="text-dsa-blue mr-2">✓</span>
                         <span className="dark:text-white text-black">Security</span>
                       </div>
                     )}
                     {/* Display amenities from the amenities array */}
                     {currentProperty.amenities && currentProperty.amenities.map((amenity, index) => (
                       <div key={index} className="flex items-center">
-                        <span className="dark:text-green-500 text-green-500 mr-2">✓</span>
+                        <span className="text-dsa-blue mr-2">✓</span>
                         <span className="dark:text-white text-black">{amenity}</span>
                       </div>
                     ))}
@@ -191,8 +199,8 @@ export default function PropertyPage({ params }: PropertyPageProps) {
               <div className="lg:col-span-1">
                 <div className="bg-white dark:bg-black rounded-2xl shadow-lg p-8 sticky top-24">
                   <div className='flex items-center justify-between'>
-                    <h3 className="text-xl font-semibold mb-6">Contact Owner</h3>
-                      {currentProperty.owner?.id !== user?.id && 
+                    <h3 className="text-xl font-semibold mb-6 text-dsa-orange">Contact Owner</h3>
+                      {user && (currentProperty.owner?.id !== user?.id) && 
                         (!currentProperty.is_interested ? (
                           <button className='cursor-pointer' onClick={() => dispatch(addToInterests(currentProperty.slug))}>
                             <BookMark />
@@ -206,7 +214,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
                   
                   <div className="mb-6">
                     <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-blue-600 rounded-full mr-4 flex items-center justify-center text-white font-semibold">
+                      <div className="w-12 h-12 bg-dsa-blue rounded-full mr-4 flex items-center justify-center text-white font-semibold">
                         {currentProperty.owner?.name?.charAt(0)}
                       </div>
                       <div>
@@ -218,7 +226,7 @@ export default function PropertyPage({ params }: PropertyPageProps) {
                   
                   <div className="mt-5 flex flex-col gap-2">
                     <Button disabled={isSending} className="w-full disabled:opacity-50" onClick={handleChatOwner}>
-                      {isSending ? 'Sending...' : 'Chat Owner'}
+                      {isSending ? 'Sending...' : user ? 'Chat Owner' : 'Login to Chat'}
                     </Button>
                     {currentProperty.owner?.phone && (
                       <Button className="w-full" onClick={() => window.open(`tel:${currentProperty.owner?.phone}`, '_blank')}>
@@ -236,6 +244,6 @@ export default function PropertyPage({ params }: PropertyPageProps) {
             </div>
           </div>
       </div>
-    </ProtectedRoute>
+    // </ProtectedRoute>
   );
 } 
