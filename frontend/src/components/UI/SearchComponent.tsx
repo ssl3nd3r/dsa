@@ -52,6 +52,7 @@ export default function SearchComponent({params, onHandleSearch, maxWidth}: Sear
       params.append('property_type', propertyType.trim());
     }
 
+
     if (searchParams.billing_cycle) {
       let billingCycle: string;
       if (typeof searchParams.billing_cycle === 'object' && searchParams.billing_cycle && 'value' in searchParams.billing_cycle) {
@@ -107,11 +108,14 @@ export default function SearchComponent({params, onHandleSearch, maxWidth}: Sear
         <Select className='w-full md:w-fit' value={searchParams.location} options={AREAS} label='Locations' isMulti onChange={(value) => {setSearchParams({...searchParams, location: value})}} />
         <Select
           className='w-full md:w-fit'
-          value={searchParams.billing_cycle ?? BILLING_CYCLES[0]}
+          value={() => {
+            console.log(searchParams.billing_cycle ?? BILLING_CYCLES[0])
+            return searchParams.billing_cycle ?? BILLING_CYCLES[0]
+          }}
           options={BILLING_CYCLES}
           label='Billing Cycle'
           notClearable
-          onChange={(value) =>  setSearchParams({ ...searchParams, billing_cycle: value?.value || BILLING_CYCLES[0].value }) }
+          onChange={(value) =>  setSearchParams({ ...searchParams, billing_cycle: value?.value ?? BILLING_CYCLES[0].value }) }
         />
         <Select className='w-full md:w-fit' value={searchParams.amenities} options={AMENITIES} label='Amenities' isMulti onChange={(value) => {setSearchParams({...searchParams, amenities: value})}} />
       </div>

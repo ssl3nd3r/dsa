@@ -77,6 +77,7 @@ export const PROPERTY_TYPES = [
   }
   ];
 
+  // Room Types
 export const ROOM_TYPES = [
   {
     value: 'Entire Place',
@@ -85,12 +86,22 @@ export const ROOM_TYPES = [
     value: 'Private Room',
     label: 'Private Room'
   }, {
-    value: 'Shared Room',
-    label: 'Shared Room'
+    value: 'Master Room',
+    label: 'Master Room'
+  }, {
+    value: 'Partitioned Room',
+    label: 'Partitioned Room'
+  }, {
+    value: 'Bed Space',
+    label: 'Bed Space'
   }
 ];
 
 export const BILLING_CYCLES = [
+  {
+    value: null,
+    label: 'All'
+  },
   {
     value: 'Monthly',
     label: 'Monthly'

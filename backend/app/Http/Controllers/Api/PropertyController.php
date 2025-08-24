@@ -78,7 +78,18 @@ class PropertyController extends Controller
     public function index(Request $request)
     {
         $query = Property::with('owner')->where('is_available', true);
-
+        
+        // Text search across title, description, location, and room type
+        if ($request->has('search_query') && !empty($request->search_query)) {
+            $searchTerm = $request->search_query;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                  ->orWhere('description', 'like', "%{$searchTerm}%")
+                  ->orWhere('location', 'like', "%{$searchTerm}%")
+                  ->orWhere('room_type', 'like', "%{$searchTerm}%");
+            });
+        }
+        
         // Filter by location
         if ($request->has('location')) {
             $locations = is_array($request->location) ? $request->location : explode(',', $request->location);
@@ -146,7 +157,10 @@ class PropertyController extends Controller
         
         // Filter by billing cycle (only if no price filtering is happening)
         // When price filtering is active, we want to see all billing cycles for comparison
-        if ($request->has('billing_cycle') && !$request->has('min_price') && !$request->has('max_price')) {
+        if ($request->has('billing_cycle') && 
+            $request->billing_cycle !== null && 
+            !$request->has('min_price') && 
+            !$request->has('max_price')) {
             $query->where('billing_cycle', $request->billing_cycle);
         }
 
@@ -255,8 +269,11 @@ class PropertyController extends Controller
             
             // Filter by billing cycle (only if no price filtering is happening)
             // When price filtering is active, we want to see all billing cycles for comparison
-            if (isset($params['billing_cycle']) && !empty($params['billing_cycle']) && 
-                !isset($params['min_price']) && !isset($params['max_price'])) {
+            if (isset($params['billing_cycle']) && 
+                $params['billing_cycle'] !== null && 
+                !empty($params['billing_cycle']) && 
+                !isset($params['min_price']) && 
+                !isset($params['max_price'])) {
                 $query->where('billing_cycle', $params['billing_cycle']);
             }
     

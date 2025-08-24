@@ -94,7 +94,7 @@ export default function PropertyCard({property, showDescription = true, showAvai
           Available from: {property.available_from ? new Date(property.available_from).toLocaleDateString() : 'N/A'}
         </div>
         {property.is_available && (
-          <RouteLink href={`/properties/${property.slug}`} className="flex items-center p-2.5 border border-black dark:border-white rounded-full gap-2 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black transition-all duration-300">
+          <RouteLink href={`/properties/${property.slug}`} className="flex items-center p-2.5 border border-dsa-orange text-dsa-orange rounded-full gap-2 hover:bg-dsa-orange hover:text-white dark:hover:text-black transition-all duration-300">
             <ArrowEnter />
           </RouteLink>
         )}

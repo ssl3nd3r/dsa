@@ -31,7 +31,7 @@ class PropertyFactory extends Factory
         // ];
 
         $propertyTypes = ['Studio', '1BR', '2BR', '3BR', '4BR+'];
-        $roomTypes = ['Entire Place', 'Private Room', 'Shared Room'];
+        $roomTypes = ['Entire Place', 'Private Room', 'Master Room', 'Partitioned Room', 'Bed Space'];
         $currencies = ['AED'];
         $billingCycles = ['Monthly', 'Quarterly', 'Yearly'];
         $statuses = ['Active', 'Pending', 'Rented', 'Inactive'];
@@ -63,9 +63,9 @@ class PropertyFactory extends Factory
         };
 
         // Adjust price based on room type
-        if ($roomType === 'Shared Room') {
+        if ($roomType === 'Bed Space' || $roomType === 'Partitioned Room') {
             $basePrice = $this->faker->numberBetween(2000, 5000);
-        } elseif ($roomType === 'Private Room') {
+        } elseif ($roomType === 'Private Room' || $roomType === 'Master Room') {
             $basePrice = $this->faker->numberBetween(3000, 7000);
         }
 

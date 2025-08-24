@@ -54,9 +54,9 @@ function PropertiesContent() {
       filters[key] = value; 
     }
     
-    if (Object.keys(filters).length === 0) {
-      return;
-    }
+    // if (Object.keys(filters).length === 0) {
+    //   return;
+    // }
 
     const mappedParams = mapFilters(filters);
     setParams(mappedParams);
@@ -148,12 +148,12 @@ function PropertiesContent() {
         </div>
       </>
       :
-      [...searchParams.entries()].length === 0
-      ?
-      <div className="max-w-[1200px] py-20 px-4 text-center mx-auto">
-        <h1 className="text-2xl font-bold">Please set some filters to start your search</h1>
-      </div>
-      :
+      // [...searchParams.entries()].length === 0
+      // ?
+      // <div className="max-w-[1200px] py-20 px-4 text-center mx-auto">
+      //   <h1 className="text-2xl font-bold">Please set some filters to start your search</h1>
+      // </div>
+      // :
       <div className="max-w-[1200px] py-20 px-4 text-center mx-auto">
         <h1 className="text-2xl font-bold">No properties found</h1>
         <p>Please adjust your filters and try again.</p>

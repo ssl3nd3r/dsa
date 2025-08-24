@@ -29,7 +29,7 @@ return new class extends Migration
             
             // Property Details
             $table->enum('property_type', ['Studio', '1BR', '2BR', '3BR', '4BR+']);
-            $table->enum('room_type', ['Entire Place', 'Private Room', 'Shared Room']);
+            $table->enum('room_type', ['Entire Place', 'Private Room', 'Master Room', 'Partitioned Room', 'Bed Space']);
             $table->integer('size'); // in sq ft
             $table->integer('bedrooms');
             $table->integer('bathrooms');

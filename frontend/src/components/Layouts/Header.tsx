@@ -12,7 +12,7 @@ import SearchIcon from '../UI/Assets/SearchIcon';
 import LogoutIcon from '../UI/Assets/LogoutIcon';
 import ChatIcon from '../UI/Assets/ChatIcon';
 import pusher from '@/lib/pusher';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function Header() {
   const { isAuthenticated, user } = useAuth({ disableRedirect: true });
@@ -20,6 +20,9 @@ export default function Header() {
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const [totalUnreadCount, setTotalUnreadCount] = useState(user?.unread_count || 0);
+  const pathname = usePathname();
+
+  const isHomePage = pathname === '/';
 
   useEffect(() => {
     setTotalUnreadCount(user?.unread_count || 0);
@@ -47,7 +50,7 @@ export default function Header() {
         <div className='flex items-center gap-4'>
         {isAuthenticated ? (
           <>
-            <button className='cursor-pointer' onClick={() => setSearchOpen(!searchOpen)}><SearchIcon /></button>
+            {!isHomePage && <button className='cursor-pointer' onClick={() => setSearchOpen(!searchOpen)}><SearchIcon /></button>}
             <RouteLink href='/profile' className='relative p-4 bg-dsa-blue rounded-full'>
               <span className='text-sm absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white'>{user?.name[0]}</span>
             </RouteLink> 

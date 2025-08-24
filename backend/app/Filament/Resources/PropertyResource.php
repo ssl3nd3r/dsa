@@ -91,7 +91,9 @@ class PropertyResource extends Resource
                                     ->options([
                                         'Entire Place' => 'Entire Place',
                                         'Private Room' => 'Private Room',
-                                        'Shared Room' => 'Shared Room',
+                                        'Master Room' => 'Master Room',
+                                        'Partitioned Room' => 'Partitioned Room',
+                                        'Bed Space' => 'Bed Space',
                                     ])
                                     ->required(),
                                 TextInput::make('size')
@@ -261,7 +263,9 @@ class PropertyResource extends Resource
                     ->options([
                         'Entire Place' => 'Entire Place',
                         'Private Room' => 'Private Room',
-                        'Shared Room' => 'Shared Room',
+                        'Master Room' => 'Master Room',
+                        'Partitioned Room' => 'Partitioned Room',
+                        'Bed Space' => 'Bed Space',
                     ]),
                 TernaryFilter::make('is_available')
                     ->label('Available Properties'),

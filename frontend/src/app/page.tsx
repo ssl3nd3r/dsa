@@ -1,7 +1,10 @@
 'use client';
 
 import React from 'react';
-import PropertyTypeCard from '@/components/UI/PropertyTypeCard';
+// import PropertyTypeCard from '@/components/UI/PropertyTypeCard';
+// import SearchComponentMobile from '@/components/UI/SearchComponentMobile';
+// import SearchComponent from '@/components/UI/SearchComponent';
+import SearchComponentHome from '@/components/UI/SearchComponentHome';
 // import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 export default function HomePage() {
@@ -19,13 +22,8 @@ export default function HomePage() {
           <h1 className='mt-14 text-center text-xl !text-white'>What are you looking for?</h1>
         </div>
       </div>
-      <div className='grid grid-cols-2 sm:grid-cols-3 max-w-[800px] mx-auto px-4 -mt-[90px] justify-center items-baseline gap-4 w-full'>
-        <PropertyTypeCard label='Studio' type='Studio' />
-        <PropertyTypeCard label='1 Bedroom' type='1BR' />
-        <PropertyTypeCard label='2 Bedroom' type='2BR' />
-        <PropertyTypeCard label='3 Bedroom' type='3BR' />
-        <PropertyTypeCard label='4+ Bedroom' type='4BR+' />
-        <PropertyTypeCard label='Private Room' type='Private Room' propertyOrRoomType='room' />
+      <div className="-mt-[70px] px-4">
+        <SearchComponentHome maxWidth='1200px'/>
       </div>
     </div>
     // </ProtectedRoute>

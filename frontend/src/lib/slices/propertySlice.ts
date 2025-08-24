@@ -73,6 +73,7 @@ export interface Property {
 }
 
 export interface PropertyFilters {
+  search_query?: string;
   property_type?: string | {value: string, label: string};
   room_type?: string | {value: string, label: string};
   min_price?: number | undefined;
@@ -80,7 +81,7 @@ export interface PropertyFilters {
   location?: Array<{value: string, label: string}>;
   address?: string;
   description?: string;
-  billing_cycle?: string | {value: string, label: string};
+  billing_cycle?: string | {value: string | null, label: string} | null;
   bedrooms?: number;
   bathrooms?: number;
   furnished?: boolean;

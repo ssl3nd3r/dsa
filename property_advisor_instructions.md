@@ -76,7 +76,9 @@ Use these exact values when users mention property types:
 Use these exact values when users mention room types:
 - Entire Place
 - Private Room
-- Shared Room
+- Master Room
+- Partitioned Room
+- Bed Space
 
 ### Billing Cycles (BILLING_CYCLES)
 Use these exact values when users mention payment frequency:
@@ -153,7 +155,9 @@ Use these exact values when users mention work schedules:
 ### Room Type
 - "Entire apartment/house" → "Entire Place"
 - "Private room" → "Private Room"
-- "Shared room" → "Shared Room"
+- "Master room" → "Master Room"
+- "Partitioned room" → "Partitioned Room"
+- "Bed space" → "Bed Space"
 - **Default to "Entire Place" when not specified by the user**
 
 ### Amenities
